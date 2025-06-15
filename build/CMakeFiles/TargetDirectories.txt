@@ -1,3 +1,0 @@
-C:/Users/Betinho/Documents/Faculdade/Cadeiras/Computacao_Grafica/Trab Final/build/CMakeFiles/main.dir
-C:/Users/Betinho/Documents/Faculdade/Cadeiras/Computacao_Grafica/Trab Final/build/CMakeFiles/edit_cache.dir
-C:/Users/Betinho/Documents/Faculdade/Cadeiras/Computacao_Grafica/Trab Final/build/CMakeFiles/rebuild_cache.dir
