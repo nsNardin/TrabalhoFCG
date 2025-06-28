@@ -19,6 +19,9 @@ out vec4 position_world;
 out vec4 normal;
 flat out vec4 flat_normal; // normal não interpolada
 
+out vec4 position_model;
+out vec4 normal;
+out vec2 texcoords;
 
 void main()
 {
@@ -53,11 +56,17 @@ void main()
     // Posição do vértice atual no sistema de coordenadas global (World).
     position_world = model * model_coefficients;
 
+    // Posição do vértice atual no sistema de coordenadas local do modelo.
+    position_model = model_coefficients;
+
     // Normal do vértice atual no sistema de coordenadas global (World).
     // Veja slides 123-151 do documento Aula_07_Transformacoes_Geometricas_3D.pdf.
     normal = inverse(transpose(model)) * normal_coefficients;
     normal.w = 0.0;
     flat_normal = normal; // valor idêntico, mas não será interpolado
 
+
+    // Coordenadas de textura obtidas do arquivo OBJ (se existirem!)
+    texcoords = texture_coefficients;
 }
 
