@@ -56,10 +56,10 @@ RM = "C:\Program Files\cmake-3.29.2-windows-x86_64\bin\cmake.exe" -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = C:\Users\Usuario\Documents\GitHub\FCG\Laboratorio_5_Codigo_Fonte
+CMAKE_SOURCE_DIR = C:\Users\Usuario\Documents\GitHub\TrabalhoFCG
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = C:\Users\Usuario\Documents\GitHub\FCG\Laboratorio_5_Codigo_Fonte\build
+CMAKE_BINARY_DIR = C:\Users\Usuario\Documents\GitHub\TrabalhoFCG\build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -86,9 +86,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\Usuario\Documents\GitHub\FCG\Laboratorio_5_Codigo_Fonte\build\CMakeFiles C:\Users\Usuario\Documents\GitHub\FCG\Laboratorio_5_Codigo_Fonte\build\\CMakeFiles\progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\Usuario\Documents\GitHub\TrabalhoFCG\build\CMakeFiles C:\Users\Usuario\Documents\GitHub\TrabalhoFCG\build\\CMakeFiles\progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\Usuario\Documents\GitHub\FCG\Laboratorio_5_Codigo_Fonte\build\CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\Usuario\Documents\GitHub\TrabalhoFCG\build\CMakeFiles 0
 .PHONY : all
 
 # The main clean target

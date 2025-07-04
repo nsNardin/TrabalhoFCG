@@ -1,7 +1,7 @@
 file(REMOVE_RECURSE
-  "C:/Users/Usuario/Documents/GitHub/FCG/Laboratorio_5_Codigo_Fonte/bin/Debug/main.exe"
-  "C:/Users/Usuario/Documents/GitHub/FCG/Laboratorio_5_Codigo_Fonte/bin/Debug/main.exe.manifest"
-  "C:/Users/Usuario/Documents/GitHub/FCG/Laboratorio_5_Codigo_Fonte/bin/Debug/main.pdb"
+  "C:/Users/Usuario/Documents/GitHub/TrabalhoFCG/bin/Debug/main.exe"
+  "C:/Users/Usuario/Documents/GitHub/TrabalhoFCG/bin/Debug/main.exe.manifest"
+  "C:/Users/Usuario/Documents/GitHub/TrabalhoFCG/bin/Debug/main.pdb"
   "CMakeFiles/main.dir/src/glad.c.obj"
   "CMakeFiles/main.dir/src/glad.c.obj.d"
   "CMakeFiles/main.dir/src/main.cpp.obj"

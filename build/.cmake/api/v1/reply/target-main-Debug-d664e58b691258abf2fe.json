@@ -2,10 +2,10 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "C:/Users/Usuario/Documents/GitHub/FCG/Laboratorio_5_Codigo_Fonte/bin/Debug/main.exe"
+			"path" : "C:/Users/Usuario/Documents/GitHub/TrabalhoFCG/bin/Debug/main.exe"
 		},
 		{
-			"path" : "C:/Users/Usuario/Documents/GitHub/FCG/Laboratorio_5_Codigo_Fonte/bin/Debug/main.pdb"
+			"path" : "C:/Users/Usuario/Documents/GitHub/TrabalhoFCG/bin/Debug/main.pdb"
 		}
 	],
 	"backtrace" : 1,
@@ -59,7 +59,7 @@
 			[
 				{
 					"backtrace" : 3,
-					"path" : "C:/Users/Usuario/Documents/GitHub/FCG/Laboratorio_5_Codigo_Fonte/include"
+					"path" : "C:/Users/Usuario/Documents/GitHub/TrabalhoFCG/include"
 				}
 			],
 			"language" : "CXX",
@@ -90,7 +90,7 @@
 			[
 				{
 					"backtrace" : 3,
-					"path" : "C:/Users/Usuario/Documents/GitHub/FCG/Laboratorio_5_Codigo_Fonte/include"
+					"path" : "C:/Users/Usuario/Documents/GitHub/TrabalhoFCG/include"
 				}
 			],
 			"language" : "C",
@@ -115,7 +115,7 @@
 			},
 			{
 				"backtrace" : 2,
-				"fragment" : "C:\\Users\\Usuario\\Documents\\GitHub\\FCG\\Laboratorio_5_Codigo_Fonte\\lib-mingw-64\\libglfw3.a",
+				"fragment" : "C:\\Users\\Usuario\\Documents\\GitHub\\TrabalhoFCG\\lib-ucrt-64\\libglfw3.a",
 				"role" : "libraries"
 			},
 			{

@@ -29,7 +29,7 @@ set(CMAKE_MAKEFILE_DEPENDS
   "C:/Program Files/cmake-3.29.2-windows-x86_64/share/cmake-3.29/Modules/Platform/Windows-windres.cmake"
   "C:/Program Files/cmake-3.29.2-windows-x86_64/share/cmake-3.29/Modules/Platform/Windows.cmake"
   "C:/Program Files/cmake-3.29.2-windows-x86_64/share/cmake-3.29/Modules/Platform/WindowsPaths.cmake"
-  "C:/Users/Usuario/Documents/GitHub/FCG/Laboratorio_5_Codigo_Fonte/CMakeLists.txt"
+  "C:/Users/Usuario/Documents/GitHub/TrabalhoFCG/CMakeLists.txt"
   "CMakeFiles/3.29.2/CMakeCCompiler.cmake"
   "CMakeFiles/3.29.2/CMakeCXXCompiler.cmake"
   "CMakeFiles/3.29.2/CMakeRCCompiler.cmake"
