@@ -127,7 +127,7 @@ void main()
     // Equação de Iluminação
     float lambert = max(0,dot(n,l));
 
-    color.rgb = Kd0 * (lambert + 0.01);
+    color.rgb = Kd0 * (lambert + 0.01) + Kd1 * (1.0 - lambert);
 
     // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
     // necessário:
