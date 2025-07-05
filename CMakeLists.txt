@@ -11,7 +11,7 @@ set(SOURCES
   src/tiny_obj_loader.cpp
   src/stb_image.cpp
   src/glad.c
-  src/minesweeper_logic.cpp
+  src/minesweeper_logic.hpp
 )
 
 cmake_minimum_required(VERSION 3.5.0)
@@ -131,18 +131,3 @@ elseif(UNIX)
   )
 
 endif()
-
-
-# Create a new build configuration for debugging
-set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Build type for debugging")
-
-# Add a new target for debugging
-add_executable(terminal src/terminal_debug.cpp)
-
-# Set the build properties for the debug target
-set_target_properties(terminal PROPERTIES
-  COMPILE_DEFINITIONS "$<$<CONFIG:Debug>:DEBUG>"
-  COMPILE_FLAGS "-g -O0"
-  OUTPUT_NAME "terminal.exe"
-)
-

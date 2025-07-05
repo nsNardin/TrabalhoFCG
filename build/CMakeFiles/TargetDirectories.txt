@@ -1,4 +1,0 @@
-C:/Users/Usuario/Documents/GitHub/TrabalhoFCG/build/CMakeFiles/main.dir
-C:/Users/Usuario/Documents/GitHub/TrabalhoFCG/build/CMakeFiles/terminal.dir
-C:/Users/Usuario/Documents/GitHub/TrabalhoFCG/build/CMakeFiles/edit_cache.dir
-C:/Users/Usuario/Documents/GitHub/TrabalhoFCG/build/CMakeFiles/rebuild_cache.dir

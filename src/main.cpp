@@ -38,6 +38,7 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "minesweeper_logic.hpp"
 
 // Headers da biblioteca para carregar modelos obj
 #include <tiny_obj_loader.h>
@@ -226,6 +227,13 @@ GLuint g_NumLoadedTextures = 0;
 
 int main(int argc, char* argv[])
 {
+
+    const float ESPACO = 0.35f;
+
+    Board board;
+    board.init();
+    board.start();
+
     // Inicializamos a biblioteca GLFW, utilizada para criar uma janela do
     // sistema operacional, onde poderemos renderizar com OpenGL.
     int success = glfwInit();
@@ -417,33 +425,75 @@ int main(int argc, char* argv[])
         #define BUNNY  1
         #define PLANE  2
 
-        // Desenhamos o modelo da esfera
+        /*// Desenhamos o modelo da esfera
         model = Matrix_Translate(-1.0f,0.0f,0.0f)
               * Matrix_Rotate_Z(0.6f)
               * Matrix_Rotate_X(0.2f)
               * Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.1f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, SPHERE);
-        DrawVirtualObject("the_sphere");
+        DrawVirtualObject("the_sphere");*/
 
-        // Desenhamos o modelo do coelho
+        /*// Desenhamos o modelo do coelho
         model = Matrix_Translate(1.0f,0.0f,0.0f)
               * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, BUNNY);
-        DrawVirtualObject("the_bunny");
+        DrawVirtualObject("the_bunny");*/
 
         // Desenhamos o plano do chão
-        model = Matrix_Translate(0.0f,-1.1f,0.0f);
+        model = Matrix_Translate(0.0f,-1.0f,0.0f)
+              * Matrix_Scale(2.0f, 2.0f, 2.0f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, PLANE);
         DrawVirtualObject("the_plane");
 
         // Desenhamos o cubo
-        model = Matrix_Translate(0.0f,2.0f,-1.0f);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, 0);
-        DrawVirtualObject("the_cube");
+    for (int x = 0; x < 10; ++x) {
+        for (int y = 0; y < 10; ++y) {
+            const Block& block = board.getBlock(x, y);
+
+            float posX = x * ESPACO;
+            float posZ = y * ESPACO; // use z em vez de y para profundidade visual
+            float posY = 0.0f;       // altura constante, pois não é 3D
+
+
+            if (block.bomb){
+                glUniform1i(g_object_id_uniform, 0);
+            }else {
+                glUniform1i(g_object_id_uniform, 3);
+            }
+            
+            //Comentei a logica de renderização dos blocos
+            /*if (block.revealed) {
+                if (block.bomb) {
+                    glUniform1i(g_object_id_uniform, 1); // Vermelho
+                } else {
+                    switch (block.bomb_counter) {
+                        case 0: glUniform1i(g_object_id_uniform, 5); break;
+                        case 1: glUniform1i(g_object_id_uniform, 6); break;
+                        case 2: glUniform1i(g_object_id_uniform, 7); break;
+                        case 3: glUniform1i(g_object_id_uniform, 8); break;
+                        case 4: glUniform1i(g_object_id_uniform, 9); break;
+                        default: glUniform1i(g_object_id_uniform, 10); break;
+                    }
+                }
+            } else if (block.flag) {
+                glUniform1i(g_object_id_uniform, 4); // Amarelo
+            } else {
+                glUniform1i(g_object_id_uniform, 3); // Azul escuro
+            }*/
+
+            glm::mat4 model = Matrix_Translate(posX - 1.5f, posY - 0.85f, posZ - 1.5f)
+                            * Matrix_Scale(0.35f, 0.35f, 0.35f);
+
+            glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+            DrawVirtualObject("the_cube");
+        }
+    }
+
+
+
               
 
         // Imprimimos na tela os ângulos de Euler que controlam a rotação do
@@ -1540,4 +1590,3 @@ void PrintObjModelInfo(ObjModel* model)
 
 // set makeprg=cd\ ..\ &&\ make\ run\ >/dev/null
 // vim: set spell spelllang=pt_br :
-
