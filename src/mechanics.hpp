@@ -10,3 +10,8 @@
     // a) location
     // b) velocity
     // c) acceleration
+
+# include "minesweeper_logic.hpp"
+
+// Given the blocks positions in camera coordinates 
+// Returns the coor
