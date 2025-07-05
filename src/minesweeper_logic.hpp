@@ -4,6 +4,7 @@
 
 const int BOARD_WIDTH = 10;
 const int BOARD_HEIGHT = 10;
+const int BOMB_COUNTER = 10;
 
 class Block {
 public:
@@ -136,7 +137,7 @@ public:
 
     // Starts the game
     void start() {
-        populate(10);
+        populate(BOMB_COUNTER);
         state_ = GameState::RUNNING;
     }
 };

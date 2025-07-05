@@ -308,6 +308,10 @@ int main(int argc, char* argv[])
     // Carregamos duas imagens para serem utilizadas como textura
     LoadTextureImage("../../data/tc-earth_daymap_surface.jpg");      // TextureImage0
     LoadTextureImage("../../data/tc-earth_nightmap_citylights.gif"); // TextureImage1
+    LoadTextureImage("../../data/stone.jpg"); // TextureImage2
+    LoadTextureImage("../../data/tnt_top.png"); // TextureImage3
+    LoadTextureImage("../../data/stone.jpg"); // TextureImage4
+
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
     ObjModel spheremodel("../../data/sphere.obj");
@@ -424,6 +428,7 @@ int main(int argc, char* argv[])
         #define SPHERE 0
         #define BUNNY  1
         #define PLANE  2
+        #define CUBE   3
 
         /*// Desenhamos o modelo da esfera
         model = Matrix_Translate(-1.0f,0.0f,0.0f)
@@ -449,8 +454,8 @@ int main(int argc, char* argv[])
         DrawVirtualObject("the_plane");
 
         // Desenhamos o cubo
-    for (int x = 0; x < 10; ++x) {
-        for (int y = 0; y < 10; ++y) {
+    for (int x = 0; x < BOARD_WIDTH; ++x) {
+        for (int y = 0; y < BOARD_HEIGHT; ++y) {
             const Block& block = board.getBlock(x, y);
 
             float posX = x * ESPACO;
@@ -459,7 +464,7 @@ int main(int argc, char* argv[])
 
 
             if (block.bomb){
-                glUniform1i(g_object_id_uniform, 0);
+                glUniform1i(g_object_id_uniform, 4);
             }else {
                 glUniform1i(g_object_id_uniform, 3);
             }
@@ -662,6 +667,8 @@ void LoadShadersFromFiles()
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage0"), 0);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage1"), 1);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage2"), 2);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage3"), 3);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage4"), 4);
     glUseProgram(0);
 }
 

@@ -22,6 +22,8 @@ uniform mat4 projection;
 #define SPHERE 0
 #define BUNNY  1
 #define PLANE  2
+#define CUBE 3
+#define BOMB  4
 uniform int object_id;
 
 // Parâmetros da axis-aligned bounding box (AABB) do modelo
@@ -32,6 +34,8 @@ uniform vec4 bbox_max;
 uniform sampler2D TextureImage0;
 uniform sampler2D TextureImage1;
 uniform sampler2D TextureImage2;
+uniform sampler2D TextureImage3;
+uniform sampler2D TextureImage4;
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
 out vec4 color;
@@ -116,6 +120,32 @@ void main()
         // Coordenadas de textura do plano, obtidas do arquivo OBJ.
         U = texcoords.x;
         V = texcoords.y;
+    }else if ( object_id == CUBE )
+    {
+        // Mapeamento planar em coordenadas do modelo (por exemplo, em XZ)
+        // Pode ser trocado por outras projeções se quiser (XY, YZ, etc.)
+        float minx = bbox_min.x;
+        float maxx = bbox_max.x;
+
+        float minz = bbox_min.z;
+        float maxz = bbox_max.z;
+
+        U = (position_model.x - minx) / (maxx - minx);
+        V = (position_model.z - minz) / (maxz - minz);
+
+    }else if ( object_id == BOMB )
+    {
+        // Mapeamento planar em coordenadas do modelo (por exemplo, em XZ)
+        // Pode ser trocado por outras projeções se quiser (XY, YZ, etc.)
+        float minx = bbox_min.x;
+        float maxx = bbox_max.x;
+
+        float minz = bbox_min.z;
+        float maxz = bbox_max.z;
+
+        U = (position_model.x - minx) / (maxx - minx);
+        V = (position_model.z - minz) / (maxz - minz);
+
     }
 
     // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
@@ -128,6 +158,17 @@ void main()
     float lambert = max(0,dot(n,l));
 
     color.rgb = Kd0 * (lambert + 0.01) + Kd1 * (1.0 - lambert);
+
+    if (object_id == BOMB)
+    {
+        vec3 Kd4 = texture(TextureImage3, vec2(U,V)).rgb;
+        color.rgb = Kd4 * (lambert + 0.01);
+    }
+    if (object_id == CUBE)
+    {
+        vec3 Kd3 = texture(TextureImage2, vec2(U,V)).rgb;
+        color.rgb = Kd3 * (lambert + 0.01);
+    }
 
     // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
     // necessário:
