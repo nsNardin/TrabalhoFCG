@@ -2,6 +2,9 @@
 #include <random>
 #include <vector>
 
+const int BOARD_WIDTH = 10;
+const int BOARD_HEIGHT = 10;
+
 class Block {
 public:
     bool bomb;
@@ -19,9 +22,7 @@ enum class GameState {
 
 class Board {
 private:
-    static const int WIDTH = 10;
-    static const int HEIGHT = 10;
-    Block board_[WIDTH][HEIGHT] = {};
+    Block board_[BOARD_WIDTH][BOARD_HEIGHT] = {};
     GameState state_ = GameState::UNSTARTED;
 
     // Place a bomb at the given coordinates.
@@ -36,7 +37,7 @@ private:
                 if (dx == 0 && dy == 0) {
                     continue;
                 }
-                if (x + dx < 0 || x + dx >= WIDTH || y + dy < 0 || y + dy >= HEIGHT) {
+                if (x + dx < 0 || x + dx >= BOARD_WIDTH || y + dy < 0 || y + dy >= BOARD_HEIGHT) {
                     continue;
                 }
                 ++board_[x + dx][y + dy].bomb_counter;
@@ -58,7 +59,7 @@ private:
                     if (dx == 0 && dy == 0) {
                         continue;
                     }
-                    if (x + dx < 0 || x + dx >= WIDTH || y + dy < 0 || y + dy >= HEIGHT) {
+                    if (x + dx < 0 || x + dx >= BOARD_WIDTH || y + dy < 0 || y + dy >= BOARD_HEIGHT) {
                         continue;
                     }
                     reveal(x + dx, y + dy);
@@ -69,8 +70,8 @@ private:
 
     // Check for victory
     bool checkVictory() {
-        for (int x = 0; x < WIDTH; ++x) {
-            for (int y = 0; y < HEIGHT; ++y) {
+        for (int x = 0; x < BOARD_WIDTH; ++x) {
+            for (int y = 0; y < BOARD_HEIGHT; ++y) {
                 if (!board_[x][y].revealed && !board_[x][y].bomb) {
                     return false;
                 }
@@ -83,8 +84,8 @@ private:
     void populate(int n) {
         std::random_device rd;
         std::mt19937 mt(rd());
-        std::uniform_int_distribution<int> dist_x(0, WIDTH - 1);
-        std::uniform_int_distribution<int> dist_y(0, HEIGHT - 1);
+        std::uniform_int_distribution<int> dist_x(0, BOARD_WIDTH - 1);
+        std::uniform_int_distribution<int> dist_y(0, BOARD_HEIGHT - 1);
         int placed = 0;
         while (placed < n) {
             int x = dist_x(mt);
@@ -111,8 +112,8 @@ public:
 
     // Initializes the board.
     void init() {
-        for (int x = 0; x < WIDTH; ++x) {
-            for (int y = 0; y < HEIGHT; ++y) {
+        for (int x = 0; x < BOARD_WIDTH; ++x) {
+            for (int y = 0; y < BOARD_HEIGHT; ++y) {
                 board_[x][y] = {};
             }
         }
@@ -139,5 +140,4 @@ public:
         state_ = GameState::RUNNING;
     }
 };
-
 

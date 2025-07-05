@@ -3,6 +3,8 @@
         "deque": "cpp",
         "list": "cpp",
         "vector": "cpp",
-        "xstring": "cpp"
+        "xstring": "cpp",
+        "string": "cpp",
+        "stdexcept": "cpp"
     }
 }

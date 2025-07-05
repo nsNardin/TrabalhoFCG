@@ -128,6 +128,19 @@ main/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/build
 .PHONY : main/fast
 
+#=============================================================================
+# Target rules for targets named terminal
+
+# Build rule for target.
+terminal: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 terminal
+.PHONY : terminal
+
+# fast build rule for target.
+terminal/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\terminal.dir\build.make CMakeFiles/terminal.dir/build
+.PHONY : terminal/fast
+
 src/glad.obj: src/glad.c.obj
 .PHONY : src/glad.obj
 
@@ -176,6 +189,30 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+src/minesweeper_logic.obj: src/minesweeper_logic.cpp.obj
+.PHONY : src/minesweeper_logic.obj
+
+# target to build an object file
+src/minesweeper_logic.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/minesweeper_logic.cpp.obj
+.PHONY : src/minesweeper_logic.cpp.obj
+
+src/minesweeper_logic.i: src/minesweeper_logic.cpp.i
+.PHONY : src/minesweeper_logic.i
+
+# target to preprocess a source file
+src/minesweeper_logic.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/minesweeper_logic.cpp.i
+.PHONY : src/minesweeper_logic.cpp.i
+
+src/minesweeper_logic.s: src/minesweeper_logic.cpp.s
+.PHONY : src/minesweeper_logic.s
+
+# target to generate assembly for a file
+src/minesweeper_logic.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/minesweeper_logic.cpp.s
+.PHONY : src/minesweeper_logic.cpp.s
+
 src/stb_image.obj: src/stb_image.cpp.obj
 .PHONY : src/stb_image.obj
 
@@ -199,6 +236,30 @@ src/stb_image.s: src/stb_image.cpp.s
 src/stb_image.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/src/stb_image.cpp.s
 .PHONY : src/stb_image.cpp.s
+
+src/terminal_debug.obj: src/terminal_debug.cpp.obj
+.PHONY : src/terminal_debug.obj
+
+# target to build an object file
+src/terminal_debug.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\terminal.dir\build.make CMakeFiles/terminal.dir/src/terminal_debug.cpp.obj
+.PHONY : src/terminal_debug.cpp.obj
+
+src/terminal_debug.i: src/terminal_debug.cpp.i
+.PHONY : src/terminal_debug.i
+
+# target to preprocess a source file
+src/terminal_debug.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\terminal.dir\build.make CMakeFiles/terminal.dir/src/terminal_debug.cpp.i
+.PHONY : src/terminal_debug.cpp.i
+
+src/terminal_debug.s: src/terminal_debug.cpp.s
+.PHONY : src/terminal_debug.s
+
+# target to generate assembly for a file
+src/terminal_debug.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\terminal.dir\build.make CMakeFiles/terminal.dir/src/terminal_debug.cpp.s
+.PHONY : src/terminal_debug.cpp.s
 
 src/textrendering.obj: src/textrendering.cpp.obj
 .PHONY : src/textrendering.obj
@@ -257,15 +318,22 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... main
+	@echo ... terminal
 	@echo ... src/glad.obj
 	@echo ... src/glad.i
 	@echo ... src/glad.s
 	@echo ... src/main.obj
 	@echo ... src/main.i
 	@echo ... src/main.s
+	@echo ... src/minesweeper_logic.obj
+	@echo ... src/minesweeper_logic.i
+	@echo ... src/minesweeper_logic.s
 	@echo ... src/stb_image.obj
 	@echo ... src/stb_image.i
 	@echo ... src/stb_image.s
+	@echo ... src/terminal_debug.obj
+	@echo ... src/terminal_debug.i
+	@echo ... src/terminal_debug.s
 	@echo ... src/textrendering.obj
 	@echo ... src/textrendering.i
 	@echo ... src/textrendering.s

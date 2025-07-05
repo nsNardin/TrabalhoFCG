@@ -28,5 +28,17 @@
   "command": "C:\\msys64\\ucrt64\\bin\\gcc.exe  @CMakeFiles/main.dir/includes_C.rsp -g -o CMakeFiles\\main.dir\\src\\glad.c.obj -c C:\\Users\\Usuario\\Documents\\GitHub\\TrabalhoFCG\\src\\glad.c",
   "file": "C:/Users/Usuario/Documents/GitHub/TrabalhoFCG/src/glad.c",
   "output": "CMakeFiles/main.dir/src/glad.c.obj"
+},
+{
+  "directory": "C:/Users/Usuario/Documents/GitHub/TrabalhoFCG/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe  @CMakeFiles/main.dir/includes_CXX.rsp -g -std=c++11 -o CMakeFiles\\main.dir\\src\\minesweeper_logic.cpp.obj -c C:\\Users\\Usuario\\Documents\\GitHub\\TrabalhoFCG\\src\\minesweeper_logic.cpp",
+  "file": "C:/Users/Usuario/Documents/GitHub/TrabalhoFCG/src/minesweeper_logic.cpp",
+  "output": "CMakeFiles/main.dir/src/minesweeper_logic.cpp.obj"
+},
+{
+  "directory": "C:/Users/Usuario/Documents/GitHub/TrabalhoFCG/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -DDEBUG  -g -std=c++11 -g -O0 -o CMakeFiles\\terminal.dir\\src\\terminal_debug.cpp.obj -c C:\\Users\\Usuario\\Documents\\GitHub\\TrabalhoFCG\\src\\terminal_debug.cpp",
+  "file": "C:/Users/Usuario/Documents/GitHub/TrabalhoFCG/src/terminal_debug.cpp",
+  "output": "CMakeFiles/terminal.dir/src/terminal_debug.cpp.obj"
 }
 ]
