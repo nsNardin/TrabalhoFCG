@@ -48,7 +48,9 @@ private:
     void reveal(int x, int y) {
         board_[x][y].revealed = true;
         // If the block is a bomb, game over
-        if (board_[x][y].bomb) {}
+        if (board_[x][y].bomb) {
+            state_ = GameState::DEFEAT;
+        }
         // Elif the counter is zero, recursively reveal all adjacent blocks
         else if (board_[x][y].bomb_counter == 0) {
             for (int dx = -1; dx <= 1; ++dx) {
@@ -65,19 +67,16 @@ private:
         }
     }
 
-public:
-    // Returns a const reference to the block at the given coordinates.
-    const Block& getBlock(int x, int y) const {
-        return board_[x][y];
-    }
-
-    // Initializes the board.
-    void init() {
+    // Check for victory
+    bool checkVictory() {
         for (int x = 0; x < WIDTH; ++x) {
             for (int y = 0; y < HEIGHT; ++y) {
-                board_[x][y] = {};
+                if (!board_[x][y].revealed && !board_[x][y].bomb) {
+                    return false;
+                }
             }
         }
+        return true;
     }
 
     // Populate the board with n bombs randomly.
@@ -99,6 +98,26 @@ public:
         }
     }
 
+public:
+    // Returns a const reference to the block at the given coordinates.
+    const Block& getBlock(int x, int y) const {
+        return board_[x][y];
+    }
+    
+    // Returns the current game state
+    const GameState& getState() const {
+        return state_;
+    }
+
+    // Initializes the board.
+    void init() {
+        for (int x = 0; x < WIDTH; ++x) {
+            for (int y = 0; y < HEIGHT; ++y) {
+                board_[x][y] = {};
+            }
+        }
+    }
+
     // Toggle flag
     void toggleFlag(int x, int y) {
         board_[x][y].flag = !board_[x][y].flag;
@@ -108,19 +127,16 @@ public:
     void tryReveal(int x, int y) {
         if (!board_[x][y].revealed && !board_[x][y].flag) {
             reveal(x, y);
+            if (checkVictory()) {
+                state_ = GameState::VICTORY;
+            }
         }
     }
 
-    // Check for victory
-    bool checkVictory() {
-        for (int x = 0; x < WIDTH; ++x) {
-            for (int y = 0; y < HEIGHT; ++y) {
-                if (!board_[x][y].revealed && !board_[x][y].bomb) {
-                    return false;
-                }
-            }
-        }
-        return true;
+    // Starts the game
+    void start() {
+        populate(10);
+        state_ = GameState::RUNNING;
     }
 };
 
