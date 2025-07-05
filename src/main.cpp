@@ -310,7 +310,15 @@ int main(int argc, char* argv[])
     LoadTextureImage("../../data/tc-earth_nightmap_citylights.gif"); // TextureImage1
     LoadTextureImage("../../data/stone.jpg"); // TextureImage2
     LoadTextureImage("../../data/tnt_top.png"); // TextureImage3
-    LoadTextureImage("../../data/stone.jpg"); // TextureImage4
+    LoadTextureImage("../../data/grass.png"); // TextureImage4
+    LoadTextureImage("../../data/dirt1.png"); // TextureImage4
+    LoadTextureImage("../../data/dirt2.png"); // TextureImage4
+    LoadTextureImage("../../data/dirt3.png"); // TextureImage4
+    LoadTextureImage("../../data/dirt4.png"); // TextureImage4
+    LoadTextureImage("../../data/dirt5.png"); // TextureImage4
+    LoadTextureImage("../../data/dirt6.png"); // TextureImage4
+    LoadTextureImage("../../data/dirt7.png"); // TextureImage4
+    LoadTextureImage("../../data/dirt8.png"); // TextureImage4
 
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
@@ -465,14 +473,24 @@ int main(int argc, char* argv[])
 
             if (block.bomb){
                 glUniform1i(g_object_id_uniform, 4);
-            }else {
-                glUniform1i(g_object_id_uniform, 3);
-            }
+            }/*else {
+                switch (block.bomb_counter) {
+                        case 0: glUniform1i(g_object_id_uniform, 5); break;
+                        case 1: glUniform1i(g_object_id_uniform, 5); break;
+                        case 2: glUniform1i(g_object_id_uniform, 5); break;
+                        case 3: glUniform1i(g_object_id_uniform, 5); break;
+                        case 4: glUniform1i(g_object_id_uniform, 5); break;
+                        case 5: glUniform1i(g_object_id_uniform, 5); break;
+                        case 6: glUniform1i(g_object_id_uniform, 5); break;
+                        case 7: glUniform1i(g_object_id_uniform, 5); break;
+                        case 8: glUniform1i(g_object_id_uniform, 5); break;
+                        default: glUniform1i(g_object_id_uniform, 3); break;
+            }*/
             
             //Comentei a logica de renderização dos blocos
-            /*if (block.revealed) {
+            if (!block.revealed) {
                 if (block.bomb) {
-                    glUniform1i(g_object_id_uniform, 1); // Vermelho
+                    glUniform1i(g_object_id_uniform, 4); // Vermelho
                 } else {
                     switch (block.bomb_counter) {
                         case 0: glUniform1i(g_object_id_uniform, 5); break;
@@ -480,14 +498,14 @@ int main(int argc, char* argv[])
                         case 2: glUniform1i(g_object_id_uniform, 7); break;
                         case 3: glUniform1i(g_object_id_uniform, 8); break;
                         case 4: glUniform1i(g_object_id_uniform, 9); break;
-                        default: glUniform1i(g_object_id_uniform, 10); break;
+                        default: glUniform1i(g_object_id_uniform, 3); break;
                     }
                 }
             } else if (block.flag) {
                 glUniform1i(g_object_id_uniform, 4); // Amarelo
             } else {
                 glUniform1i(g_object_id_uniform, 3); // Azul escuro
-            }*/
+            }
 
             glm::mat4 model = Matrix_Translate(posX - 1.5f, posY - 0.85f, posZ - 1.5f)
                             * Matrix_Scale(0.35f, 0.35f, 0.35f);
@@ -666,9 +684,17 @@ void LoadShadersFromFiles()
     glUseProgram(g_GpuProgramID);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage0"), 0);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage1"), 1);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage2"), 2);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage3"), 3);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage4"), 4);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "StoneTexture"), 2);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "BombTexture"), 3);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "GrassTexture"), 4);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "Dirt1Texture"), 5);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "Dirt2Texture"), 6);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "Dirt3Texture"), 7);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "Dirt4Texture"), 8);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "Dirt5Texture"), 9);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "Dirt6Texture"), 10);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "Dirt7Texture"), 11);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "Dirt8Texture"), 12);
     glUseProgram(0);
 }
 
