@@ -310,7 +310,7 @@ int main(int argc, char* argv[])
     LoadTextureImage("../../data/tc-earth_nightmap_citylights.gif"); // TextureImage1
     LoadTextureImage("../../data/stone.jpg"); // TextureImage2
     LoadTextureImage("../../data/tnt_top.png"); // TextureImage3
-    LoadTextureImage("../../data/grass.png"); // TextureImage4
+    LoadTextureImage("../../data/dirt.png"); // TextureImage4
     LoadTextureImage("../../data/dirt1.png"); // TextureImage4
     LoadTextureImage("../../data/dirt2.png"); // TextureImage4
     LoadTextureImage("../../data/dirt3.png"); // TextureImage4
@@ -471,41 +471,32 @@ int main(int argc, char* argv[])
             float posY = 0.0f;       // altura constante, pois não é 3D
 
 
-            if (block.bomb){
-                glUniform1i(g_object_id_uniform, 4);
-            }/*else {
-                switch (block.bomb_counter) {
-                        case 0: glUniform1i(g_object_id_uniform, 5); break;
-                        case 1: glUniform1i(g_object_id_uniform, 5); break;
-                        case 2: glUniform1i(g_object_id_uniform, 5); break;
-                        case 3: glUniform1i(g_object_id_uniform, 5); break;
-                        case 4: glUniform1i(g_object_id_uniform, 5); break;
-                        case 5: glUniform1i(g_object_id_uniform, 5); break;
-                        case 6: glUniform1i(g_object_id_uniform, 5); break;
-                        case 7: glUniform1i(g_object_id_uniform, 5); break;
-                        case 8: glUniform1i(g_object_id_uniform, 5); break;
-                        default: glUniform1i(g_object_id_uniform, 3); break;
-            }*/
-            
-            //Comentei a logica de renderização dos blocos
-            if (!block.revealed) {
-                if (block.bomb) {
-                    glUniform1i(g_object_id_uniform, 4); // Vermelho
-                } else {
-                    switch (block.bomb_counter) {
-                        case 0: glUniform1i(g_object_id_uniform, 5); break;
-                        case 1: glUniform1i(g_object_id_uniform, 6); break;
-                        case 2: glUniform1i(g_object_id_uniform, 7); break;
-                        case 3: glUniform1i(g_object_id_uniform, 8); break;
-                        case 4: glUniform1i(g_object_id_uniform, 9); break;
-                        default: glUniform1i(g_object_id_uniform, 3); break;
-                    }
-                }
-            } else if (block.flag) {
-                glUniform1i(g_object_id_uniform, 4); // Amarelo
+        if (block.revealed) {
+            if (block.bomb) {
+                glUniform1i(g_object_id_uniform, 4); // Vermelho - bomba revelada
             } else {
-                glUniform1i(g_object_id_uniform, 3); // Azul escuro
+                // Revelado e não é bomba → mostra contador
+                switch (block.bomb_counter) {
+                    case 0: glUniform1i(g_object_id_uniform, 5); break; // Cinza
+                    case 1: glUniform1i(g_object_id_uniform, 6); break; // Azul
+                    case 2: glUniform1i(g_object_id_uniform, 7); break; // Verde
+                    case 3: glUniform1i(g_object_id_uniform, 8); break; // Vermelho
+                    case 4: glUniform1i(g_object_id_uniform, 9); break; // Roxo
+                    case 5: glUniform1i(g_object_id_uniform, 10); break; // Roxo
+                    case 6: glUniform1i(g_object_id_uniform, 11); break; // Roxo
+                    case 7: glUniform1i(g_object_id_uniform, 12); break; // Roxo
+                    case 8: glUniform1i(g_object_id_uniform, 13); break; // Roxo
+                    default: glUniform1i(g_object_id_uniform, 3); break; // Azul escuro ou genérico
+                }
             }
+        } else {
+            if (block.flag) {
+                glUniform1i(g_object_id_uniform, 4); // Amarelo - bandeira
+            } else {
+                glUniform1i(g_object_id_uniform, 3); // Azul escuro - bloco oculto
+            }
+        }
+
 
             glm::mat4 model = Matrix_Translate(posX - 1.5f, posY - 0.85f, posZ - 1.5f)
                             * Matrix_Scale(0.35f, 0.35f, 0.35f);
@@ -686,7 +677,7 @@ void LoadShadersFromFiles()
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage1"), 1);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "StoneTexture"), 2);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "BombTexture"), 3);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "GrassTexture"), 4);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "DirtTexture"), 4);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "Dirt1Texture"), 5);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "Dirt2Texture"), 6);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "Dirt3Texture"), 7);

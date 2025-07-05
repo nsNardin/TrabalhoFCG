@@ -24,7 +24,7 @@ uniform mat4 projection;
 #define PLANE  2
 #define CUBE 3
 #define BOMB  4
-#define GRASS  5
+#define DIRT  5
 #define DIRT1 6
 #define DIRT2  7
 #define DIRT3  8
@@ -33,6 +33,7 @@ uniform mat4 projection;
 #define DIRT6  11
 #define DIRT7  12
 #define DIRT8  13
+#define FLAG   14
 uniform int object_id;
 
 // Parâmetros da axis-aligned bounding box (AABB) do modelo
@@ -44,7 +45,7 @@ uniform sampler2D TextureImage0;
 uniform sampler2D TextureImage1;
 uniform sampler2D StoneTexture;
 uniform sampler2D BombTexture;
-uniform sampler2D GrassTexture;
+uniform sampler2D DirtTexture;
 uniform sampler2D Dirt1Texture;
 uniform sampler2D Dirt2Texture;
 uniform sampler2D Dirt3Texture;
@@ -184,7 +185,7 @@ void main()
         vec3 Kd3 = texture(StoneTexture, vec2(U,V)).rgb;
         color.rgb = Kd3 * (lambert + 0.01);
     }else
-    if (object_id == GRASS)
+    if (object_id == DIRT)
     {
         // Mapeamento planar em coordenadas do modelo (por exemplo, em XZ)
         // Pode ser trocado por outras projeções se quiser (XY, YZ, etc.)
@@ -197,7 +198,7 @@ void main()
         U = (position_model.x - minx) / (maxx - minx);
         V = (position_model.z - minz) / (maxz - minz);
 
-        vec3 Kd5 = texture(GrassTexture, vec2(U,V)).rgb;
+        vec3 Kd5 = texture(DirtTexture, vec2(U,V)).rgb;
         color.rgb = Kd5 * (lambert + 0.01);
 
     }else
@@ -247,6 +248,102 @@ void main()
         V = (position_model.z - minz) / (maxz - minz);
 
         vec3 Kd6 = texture(Dirt3Texture, vec2(U,V)).rgb;
+        color.rgb = Kd6 * (lambert + 0.01);
+    }else
+    if (object_id == DIRT4)
+    {
+        // Mapeamento planar em coordenadas do modelo (por exemplo, em XZ)
+        // Pode ser trocado por outras projeções se quiser (XY, YZ, etc.)
+        float minx = bbox_min.x;
+        float maxx = bbox_max.x;
+
+        float minz = bbox_min.z;
+        float maxz = bbox_max.z;
+
+        U = (position_model.x - minx) / (maxx - minx);
+        V = (position_model.z - minz) / (maxz - minz);
+
+        vec3 Kd6 = texture(Dirt4Texture, vec2(U,V)).rgb;
+        color.rgb = Kd6 * (lambert + 0.01);
+    }else
+    if (object_id == DIRT5)
+    {
+        // Mapeamento planar em coordenadas do modelo (por exemplo, em XZ)
+        // Pode ser trocado por outras projeções se quiser (XY, YZ, etc.)
+        float minx = bbox_min.x;
+        float maxx = bbox_max.x;
+
+        float minz = bbox_min.z;
+        float maxz = bbox_max.z;
+
+        U = (position_model.x - minx) / (maxx - minx);
+        V = (position_model.z - minz) / (maxz - minz);
+
+        vec3 Kd6 = texture(Dirt5Texture, vec2(U,V)).rgb;
+        color.rgb = Kd6 * (lambert + 0.01);
+    }else
+    if (object_id == DIRT6)
+    {
+        // Mapeamento planar em coordenadas do modelo (por exemplo, em XZ)
+        // Pode ser trocado por outras projeções se quiser (XY, YZ, etc.)
+        float minx = bbox_min.x;
+        float maxx = bbox_max.x;
+
+        float minz = bbox_min.z;
+        float maxz = bbox_max.z;
+
+        U = (position_model.x - minx) / (maxx - minx);
+        V = (position_model.z - minz) / (maxz - minz);
+
+        vec3 Kd6 = texture(Dirt6Texture, vec2(U,V)).rgb;
+        color.rgb = Kd6 * (lambert + 0.01);
+    }else
+    if (object_id == DIRT7)
+    {
+        // Mapeamento planar em coordenadas do modelo (por exemplo, em XZ)
+        // Pode ser trocado por outras projeções se quiser (XY, YZ, etc.)
+        float minx = bbox_min.x;
+        float maxx = bbox_max.x;
+
+        float minz = bbox_min.z;
+        float maxz = bbox_max.z;
+
+        U = (position_model.x - minx) / (maxx - minx);
+        V = (position_model.z - minz) / (maxz - minz);
+
+        vec3 Kd6 = texture(Dirt7Texture, vec2(U,V)).rgb;
+        color.rgb = Kd6 * (lambert + 0.01);
+    }else
+    if (object_id == DIRT8)
+    {
+        // Mapeamento planar em coordenadas do modelo (por exemplo, em XZ)
+        // Pode ser trocado por outras projeções se quiser (XY, YZ, etc.)
+        float minx = bbox_min.x;
+        float maxx = bbox_max.x;
+
+        float minz = bbox_min.z;
+        float maxz = bbox_max.z;
+
+        U = (position_model.x - minx) / (maxx - minx);
+        V = (position_model.z - minz) / (maxz - minz);
+
+        vec3 Kd6 = texture(Dirt8Texture, vec2(U,V)).rgb;
+        color.rgb = Kd6 * (lambert + 0.01);
+    }else
+    if (object_id == FLAG)
+    {
+        // Mapeamento planar em coordenadas do modelo (por exemplo, em XZ)
+        // Pode ser trocado por outras projeções se quiser (XY, YZ, etc.)
+        float minx = bbox_min.x;
+        float maxx = bbox_max.x;
+
+        float minz = bbox_min.z;
+        float maxz = bbox_max.z;
+
+        U = (position_model.x - minx) / (maxx - minx);
+        V = (position_model.z - minz) / (maxz - minz);
+
+        vec3 Kd6 = texture(StoneTexture, vec2(U,V)).rgb;
         color.rgb = Kd6 * (lambert + 0.01);
     }
 
