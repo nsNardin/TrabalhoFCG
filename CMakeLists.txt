@@ -12,6 +12,7 @@ set(SOURCES
   src/stb_image.cpp
   src/glad.c
   src/minesweeper_logic.hpp
+  src/mechanics.hpp
 )
 
 cmake_minimum_required(VERSION 3.5.0)
