@@ -3,9 +3,9 @@
 #include <vector>
 
 const int BOARD_WIDTH = 10;
-const int BOARD_HEIGHT = 1;
 const int BOARD_DEPTH = 10;
-const int BOMB_COUNTER = 6;
+const int BOARD_HEIGHT = 1;
+const int BOMB_COUNTER = 7;
 
 class Block {
 public:
@@ -46,7 +46,6 @@ private:
             }
         }
     }
-
 
    void reveal(int x, int y) {
         if (board_[x][y].revealed || board_[x][y].flag) {
