@@ -58,9 +58,9 @@ uniform sampler2D Dirt8Texture;
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
 out vec4 color;
-
 in vec3 frag_color;
 
+in vec3 vertex_color;
 
 // Constantes
 #define M_PI   3.14159265358979323846
@@ -146,19 +146,18 @@ void main()
         // Coordenadas de textura do plano, obtidas do arquivo OBJ.
         U = texcoords.x;
         V = texcoords.y;
-    }else if ( object_id == CUBE )
+    }else 
+    if (object_id == CUBE)
     {
-        // Mapeamento planar em coordenadas do modelo (por exemplo, em XZ)
-        // Pode ser trocado por outras projeções se quiser (XY, YZ, etc.)
         float minx = bbox_min.x;
         float maxx = bbox_max.x;
-
         float minz = bbox_min.z;
         float maxz = bbox_max.z;
-
         U = (position_model.x - minx) / (maxx - minx);
         V = (position_model.z - minz) / (maxz - minz);
-    
+
+        vec3 Kd3 = texture(GrassTexture, vec2(U,V)).rgb;
+        color.rgb = vertex_color * Kd3;
     }
 
     if (object_id == BOMB)
@@ -167,7 +166,6 @@ void main()
         // Pode ser trocado por outras projeções se quiser (XY, YZ, etc.)
         float minx = bbox_min.x;
         float maxx = bbox_max.x;
-
         float minz = bbox_min.z;
         float maxz = bbox_max.z;
 
@@ -490,43 +488,15 @@ void main()
     }else 
     if (object_id == SOLDIER)
     {
-        // Mapeamento planar em coordenadas do modelo (por exemplo, em XZ)
-        // Pode ser trocado por outras projeções se quiser (XY, YZ, etc.)
-        float minx = bbox_min.x;
-        float maxx = bbox_max.x;
-
-        float minz = bbox_min.z;
-        float maxz = bbox_max.z;
-
+        float minx = bbox_min.x, maxx = bbox_max.x;
+        float minz = bbox_min.z, maxz = bbox_max.z;
         U = (position_model.x - minx) / (maxx - minx);
         V = (position_model.z - minz) / (maxz - minz);
 
-        //vec3 Kd5 = texture(DirtTexture, vec2(U,V)).rgb;
-        //color.rgb = Kd5 * (lambert + 0.01);
-
-        vec3 Kd5 = texture(GrassTexture, vec2(U,V)).rgb;
-
-        vec3 light_dir = normalize(vec3(1.0, 1.0, 0.0));
-        vec3 view_dir = normalize(vec3(camera_position - p));
-        vec3 halfway_dir = normalize(light_dir + view_dir);
-        float shininess = 6.0;
-
-        float diff = max(dot(vec3(n), light_dir), 0.0);
-        float spec = pow(max(dot(vec3(n), halfway_dir), 0.0), shininess);
-
-        vec3 ambient = 0.1 * Kd5;
-        vec3 diffuse = 0.6 * Kd5 * diff;
-        vec3 specular = 0.1 * vec3(1.0) * spec;
-
-        color.rgb = ambient + diffuse + specular;
-    }else {
-        vec3 Kd3 = texture(TextureImage1, vec2(U,V)).rgb;
-
-        // Equação de Iluminação
-        float lambert = max(0,dot(n,l));
-
-        color.rgb = Kd3 * (lambert + 0.01);
+        vec3 Kd = texture(GrassTexture, vec2(U,V)).rgb;
+        color.rgb = vertex_color * Kd;
     }
+
 
 
     // NOTE: Se você quiser fazer o rendering de objetos transparentes, é

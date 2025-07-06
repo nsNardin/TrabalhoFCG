@@ -591,7 +591,7 @@ int main(int argc, char* argv[])
               * Matrix_Scale(4.0f, 4.0f, 4.0f)
               * Matrix_Rotate_Z(g_AngleZ)
               * Matrix_Rotate_Y(g_AngleY)
-              * Matrix_Rotate_X(-3.14/2);
+              * Matrix_Rotate_X(-3.14/2 + g_AngleX);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, SOLDIER);
         DrawVirtualObject("14074_WWII_Soldier_with_flame_thrower");

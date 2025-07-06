@@ -20,6 +20,10 @@ out vec4 position_model;
 out vec4 normal;
 out vec2 texcoords;
 
+out vec3 vertex_color; // cor interpolada para Gouraud
+uniform int object_id;
+
+
 void main()
 {
     // A variável gl_Position define a posição final de cada vértice
@@ -63,5 +67,29 @@ void main()
 
     // Coordenadas de textura obtidas do arquivo OBJ (se existirem!)
     texcoords = texture_coefficients;
+
+    vec3 light_dir = normalize(vec3(1.0, 1.0, 0.0));
+    vec3 view_dir = normalize(vec3((inverse(view) * vec4(0.0, 0.0, 0.0, 1.0)) - position_world));
+    vec3 n = normalize(vec3(normal));
+    vec3 halfway_dir = normalize(light_dir + view_dir);
+
+    float diff = max(dot(n, light_dir), 0.0);
+    float spec = pow(max(dot(n, halfway_dir), 0.0), 4.0); // Blinn-Phong com shininess = 4
+
+    vec3 Kd = vec3(1.0); // cor neutra, sobrescrita no fragment shader com textura
+
+    if (object_id == 15) // SOLDIER
+    {
+        vertex_color = 0.1 * Kd + 0.6 * Kd * diff + 0.3 * vec3(1.0); // Gouraud com Blinn-Phong
+    }
+    else if (object_id == 3) // CUBE / GRASS
+    {
+        vertex_color = 0.1 * Kd + 0.9 * Kd * diff; // Gouraud com Lambert
+    }
+    else
+    {
+        vertex_color = vec3(0.0); // os outros ignoram, usam interpolação Phong
+    }
+
 }
 
