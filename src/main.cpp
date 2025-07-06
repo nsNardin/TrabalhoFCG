@@ -228,7 +228,7 @@ GLuint g_NumLoadedTextures = 0;
 int main(int argc, char* argv[])
 {
 
-    const float ESPACO = 0.35f;
+    const float ESPACO = 1.0f;
 
     Board board;
     board.init();
@@ -307,9 +307,9 @@ int main(int argc, char* argv[])
     LoadShadersFromFiles();
 
     // Carregamos duas imagens para serem utilizadas como textura
-    LoadTextureImage("../../data/tc-earth_daymap_surface.jpg");      // TextureImage0
+    LoadTextureImage("../../data/stone.jpg");      // TextureImage0
     LoadTextureImage("../../data/tc-earth_nightmap_citylights.gif"); // TextureImage1
-    LoadTextureImage("../../data/stone.jpg"); // TextureImage2
+    LoadTextureImage("../../data/grass.png"); // TextureImage2
     LoadTextureImage("../../data/tnt_top.png"); // TextureImage3
     LoadTextureImage("../../data/dirt.png"); // TextureImage4
     LoadTextureImage("../../data/dirt1.png"); // TextureImage4
@@ -403,13 +403,13 @@ int main(int argc, char* argv[])
         // Note que, no sistema de coordenadas da câmera, os planos near e far
         // estão no sentido negativo! Veja slides 176-204 do documento Aula_09_Projecoes.pdf.
         float nearplane = -0.1f;  // Posição do "near plane"
-        float farplane  = -30.0f; // Posição do "far plane"
+        float farplane  = -1000.0f; // Posição do "far plane"
 
         if (g_UsePerspectiveProjection)
         {
             // Projeção Perspectiva.
             // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
-            float field_of_view = 3.141592 / 3.0f;
+            float field_of_view = 3.141592 / 3.14f;
             projection = Matrix_Perspective(field_of_view, g_ScreenRatio, nearplane, farplane);
         }
         else
@@ -439,25 +439,9 @@ int main(int argc, char* argv[])
         #define PLANE  2
         #define CUBE   3
 
-        /*// Desenhamos o modelo da esfera
-        model = Matrix_Translate(-1.0f,0.0f,0.0f)
-              * Matrix_Rotate_Z(0.6f)
-              * Matrix_Rotate_X(0.2f)
-              * Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.1f);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, SPHERE);
-        DrawVirtualObject("the_sphere");*/
-
-        /*// Desenhamos o modelo do coelho
-        model = Matrix_Translate(1.0f,0.0f,0.0f)
-              * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, BUNNY);
-        DrawVirtualObject("the_bunny");*/
-
         // Desenhamos o plano do chão
-        model = Matrix_Translate(0.0f,-1.0f,0.0f)
-              * Matrix_Scale(2.0f, 2.0f, 2.0f);
+        model = Matrix_Translate(BOARD_WIDTH/2, 0.0f,BOARD_HEIGHT/2)
+              * Matrix_Scale(BOARD_WIDTH/2 + 2, 0.0f, BOARD_HEIGHT/2 + 2);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, PLANE);
         DrawVirtualObject("the_plane");
@@ -478,29 +462,29 @@ int main(int argc, char* argv[])
             } else {
                 // Revelado e não é bomba → mostra contador
                 switch (block.bomb_counter) {
-                    case 0: glUniform1i(g_object_id_uniform, 5); break; // Cinza
-                    case 1: glUniform1i(g_object_id_uniform, 6); break; // Azul
-                    case 2: glUniform1i(g_object_id_uniform, 7); break; // Verde
-                    case 3: glUniform1i(g_object_id_uniform, 8); break; // Vermelho
-                    case 4: glUniform1i(g_object_id_uniform, 9); break; // Roxo
-                    case 5: glUniform1i(g_object_id_uniform, 10); break; // Roxo
-                    case 6: glUniform1i(g_object_id_uniform, 11); break; // Roxo
-                    case 7: glUniform1i(g_object_id_uniform, 12); break; // Roxo
-                    case 8: glUniform1i(g_object_id_uniform, 13); break; // Roxo
+                    case 0: glUniform1i(g_object_id_uniform, 5); break; // 0
+                    case 1: glUniform1i(g_object_id_uniform, 6); break; // 1
+                    case 2: glUniform1i(g_object_id_uniform, 7); break; // 2
+                    case 3: glUniform1i(g_object_id_uniform, 8); break; // 3
+                    case 4: glUniform1i(g_object_id_uniform, 9); break; // 4
+                    case 5: glUniform1i(g_object_id_uniform, 10); break; // 5
+                    case 6: glUniform1i(g_object_id_uniform, 11); break; // 6
+                    case 7: glUniform1i(g_object_id_uniform, 12); break; // 7
+                    case 8: glUniform1i(g_object_id_uniform, 13); break; // 8
                     default: glUniform1i(g_object_id_uniform, 3); break; // Azul escuro ou genérico
                 }
             }
         } else {
             if (block.flag) {
-                glUniform1i(g_object_id_uniform, 4); // Amarelo - bandeira
+                glUniform1i(g_object_id_uniform, 4); // bandeira
             } else {
-                glUniform1i(g_object_id_uniform, 3); // Azul escuro - bloco oculto
+                glUniform1i(g_object_id_uniform, 3); // grama
             }
         }
 
 
-            glm::mat4 model = Matrix_Translate(posX - 1.5f, posY - 0.85f, posZ - 1.5f)
-                            * Matrix_Scale(0.35f, 0.35f, 0.35f);
+            glm::mat4 model = Matrix_Translate(posX -0.0f, posY -0.0f, posZ -0.0f)
+                            * Matrix_Scale(1.0f, 1.0f, 1.0f);
 
             glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
             DrawVirtualObject("the_cube");
@@ -676,7 +660,7 @@ void LoadShadersFromFiles()
     glUseProgram(g_GpuProgramID);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage0"), 0);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage1"), 1);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "StoneTexture"), 2);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "GrassTexture"), 2);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "BombTexture"), 3);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "DirtTexture"), 4);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "Dirt1Texture"), 5);
