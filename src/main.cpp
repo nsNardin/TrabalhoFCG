@@ -532,7 +532,7 @@ int main(int argc, char* argv[])
         #define BUNNY  1
         #define PLANE  2
         #define CUBE   3
-        #define SOLDIER 4
+        #define SOLDIER 15
 
         // Desenhamos o plano do chão
         model = Matrix_Translate(BOARD_WIDTH/2, -0.5f,BOARD_DEPTH/2)

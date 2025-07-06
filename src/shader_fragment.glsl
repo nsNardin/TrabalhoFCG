@@ -59,6 +59,9 @@ uniform sampler2D Dirt8Texture;
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
 out vec4 color;
 
+in vec3 frag_color;
+
+
 // Constantes
 #define M_PI   3.14159265358979323846
 #define M_PI_2 1.57079632679489661923
@@ -69,6 +72,7 @@ void main()
     // sistema de coordenadas da câmera.
     vec4 origin = vec4(0.0, 0.0, 0.0, 1.0);
     vec4 camera_position = inverse(view) * origin;
+
 
     // O fragmento atual é coberto por um ponto que percente à superfície de um
     // dos objetos virtuais da cena. Este ponto, p, possui uma posição no
@@ -486,7 +490,8 @@ void main()
     }else 
     if (object_id == SOLDIER)
     {
-        // --- Coordenadas de textura planar XZ ---
+        // Mapeamento planar em coordenadas do modelo (por exemplo, em XZ)
+        // Pode ser trocado por outras projeções se quiser (XY, YZ, etc.)
         float minx = bbox_min.x;
         float maxx = bbox_max.x;
 
@@ -496,24 +501,26 @@ void main()
         U = (position_model.x - minx) / (maxx - minx);
         V = (position_model.z - minz) / (maxz - minz);
 
-        vec3 Kd = texture(GrassTexture, vec2(U,V)).rgb;
+        //vec3 Kd5 = texture(DirtTexture, vec2(U,V)).rgb;
+        //color.rgb = Kd5 * (lambert + 0.01);
 
-        // --- Parâmetros do modelo Blinn-Phong ---
-        vec3 light_dir = normalize(vec3(1.0, 1.0, 0.0)); // mesmo vetor l
+        vec3 Kd5 = texture(GrassTexture, vec2(U,V)).rgb;
+
+        vec3 light_dir = normalize(vec3(1.0, 1.0, 0.0));
         vec3 view_dir = normalize(vec3(camera_position - p));
         vec3 halfway_dir = normalize(light_dir + view_dir);
-        float shininess = 1.0;
+        float shininess = 6.0;
 
         float diff = max(dot(vec3(n), light_dir), 0.0);
         float spec = pow(max(dot(vec3(n), halfway_dir), 0.0), shininess);
 
-        vec3 ambient = 0.1 * Kd;
-        vec3 diffuse = 0.6 * Kd * diff;
-        vec3 specular = 4 * vec3(1.0); // cor do brilho = branco
+        vec3 ambient = 0.1 * Kd5;
+        vec3 diffuse = 0.6 * Kd5 * diff;
+        vec3 specular = 0.1 * vec3(1.0) * spec;
 
         color.rgb = ambient + diffuse + specular;
     }else {
-        vec3 Kd3 = texture(TextureImage0, vec2(U,V)).rgb;
+        vec3 Kd3 = texture(TextureImage1, vec2(U,V)).rgb;
 
         // Equação de Iluminação
         float lambert = max(0,dot(n,l));
