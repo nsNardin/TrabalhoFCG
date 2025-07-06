@@ -195,9 +195,12 @@ bool g_MiddleMouseButtonPressed = false; // Análogo para botão do meio do mous
 // usuário através do mouse (veja função CursorPosCallback()). A posição
 // efetiva da câmera é calculada dentro da função main(), dentro do loop de
 // renderização.
-float g_CameraTheta = 0.0f; // Ângulo no plano ZX em relação ao eixo Z
-float g_CameraPhi = 0.0f;   // Ângulo em relação ao eixo Y
-float g_CameraDistance = 3.5f; // Distância da câmera para a origem
+glm::vec3 g_CameraPosition = glm::vec3(BOARD_WIDTH/2, BOARD_WIDTH+BOARD_DEPTH/2, BOARD_DEPTH/2);
+float g_CameraYaw = 90.0f;  // olha para -Z
+float g_CameraPitch = -89.9f;
+float g_CameraSpeed = 10.0f;
+float g_MouseSensitivity = 0.2f;
+
 
 // Variáveis que controlam rotação do antebraço
 float g_ForearmAngleZ = 0.0f;
@@ -425,21 +428,21 @@ int main(int argc, char* argv[])
         // variáveis g_CameraDistance, g_CameraPhi, e g_CameraTheta são
         // controladas pelo mouse do usuário. Veja as funções CursorPosCallback()
         // e ScrollCallback().
-        float r = g_CameraDistance;
-        float y = r*sin(g_CameraPhi);
-        float z = r*cos(g_CameraPhi)*cos(g_CameraTheta);
-        float x = r*cos(g_CameraPhi)*sin(g_CameraTheta);
+        glm::vec3 front;
+        front.x = cos(glm::radians(g_CameraYaw)) * cos(glm::radians(g_CameraPitch));
+        front.y = sin(glm::radians(g_CameraPitch));
+        front.z = sin(glm::radians(g_CameraYaw)) * cos(glm::radians(g_CameraPitch));
+        glm::vec3 camera_front = glm::normalize(front);
+        glm::vec3 camera_up = glm::vec3(0.0f, 1.0f, 0.0f);
+        glm::vec3 camera_target = g_CameraPosition + camera_front;
 
-        // Abaixo definimos as varáveis que efetivamente definem a câmera virtual.
-        // Veja slides 195-227 e 229-234 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
-        glm::vec4 camera_position_c  = glm::vec4(x,y,z,1.0f); // Ponto "c", centro da câmera
-        glm::vec4 camera_lookat_l    = glm::vec4(0.0f,0.0f,0.0f,1.0f); // Ponto "l", para onde a câmera (look-at) estará sempre olhando
-        glm::vec4 camera_view_vector = camera_lookat_l - camera_position_c; // Vetor "view", sentido para onde a câmera está virada
-        glm::vec4 camera_up_vector   = glm::vec4(0.0f,1.0f,0.0f,0.0f); // Vetor "up" fixado para apontar para o "céu" (eito Y global)
+        glm::vec4 camera_position_c = glm::vec4(g_CameraPosition, 1.0f);
+        glm::vec4 camera_lookat_l = glm::vec4(camera_target, 1.0f);
+        glm::vec4 camera_view_vector = camera_lookat_l - camera_position_c;
+        glm::vec4 camera_up_vector = glm::vec4(camera_up, 0.0f);
 
-        // Computamos a matriz "View" utilizando os parâmetros da câmera para
-        // definir o sistema de coordenadas da câmera.  Veja slides 2-14, 184-190 e 236-242 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
         glm::mat4 view = Matrix_Camera_View(camera_position_c, camera_view_vector, camera_up_vector);
+
 
         // Agora computamos a matriz de Projeção.
         glm::mat4 projection;
@@ -468,7 +471,8 @@ int main(int argc, char* argv[])
             // PARA PROJEÇÃO ORTOGRÁFICA veja slides 219-224 do documento Aula_09_Projecoes.pdf.
             // Para simular um "zoom" ortográfico, computamos o valor de "t"
             // utilizando a variável g_CameraDistance.
-            float t = 1.5f*g_CameraDistance/2.5f;
+            float g_OrthoZoom = 3.0f; // nova variável global
+            float t = g_OrthoZoom / 2.0f;
             float b = -t;
             float r = t*g_ScreenRatio;
             float l = -r;
@@ -1228,29 +1232,22 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
 
     if (g_RightMouseButtonPressed)
     {
-        // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
         float dx = xpos - g_LastCursorPosX;
         float dy = ypos - g_LastCursorPosY;
-    
-        // Atualizamos parâmetros da câmera com os deslocamentos
-        g_CameraTheta -= 0.01f*dx;
-        g_CameraPhi   += 0.01f*dy;
-    
-        // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
-        float phimax = 3.141592f/2;
-        float phimin = -phimax;
-    
-        if (g_CameraPhi > phimax)
-            g_CameraPhi = phimax;
-    
-        if (g_CameraPhi < phimin)
-            g_CameraPhi = phimin;
-    
-        // Atualizamos as variáveis globais para armazenar a posição atual do
-        // cursor como sendo a última posição conhecida do cursor.
+
+        g_CameraYaw += dx * g_MouseSensitivity;
+        g_CameraPitch -= dy * g_MouseSensitivity;
+
+        // Limitar o pitch para evitar flip
+        if (g_CameraPitch > 89.0f)
+            g_CameraPitch = 89.0f;
+        if (g_CameraPitch < -89.0f)
+            g_CameraPitch = -89.0f;
+
         g_LastCursorPosX = xpos;
         g_LastCursorPosY = ypos;
     }
+
 
     if (g_LeftMouseButtonPressed)
     {
@@ -1290,7 +1287,10 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
     // Atualizamos a distância da câmera para a origem utilizando a
     // movimentação da "rodinha", simulando um ZOOM.
-    g_CameraDistance -= 0.1f*yoffset;
+    //g_CameraDistance -= 0.1f*yoffset;
+    g_CameraSpeed += yoffset * 0.1f;
+    if (g_CameraSpeed < 0.1f)
+        g_CameraSpeed = 0.1f;   
 
     // Uma câmera look-at nunca pode estar exatamente "em cima" do ponto para
     // onde ela está olhando, pois isto gera problemas de divisão por zero na
@@ -1298,8 +1298,8 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
     // nunca pode ser zero. Versões anteriores deste código possuíam este bug,
     // o qual foi detectado pelo aluno Vinicius Fraga (2017/2).
     const float verysmallnumber = std::numeric_limits<float>::epsilon();
-    if (g_CameraDistance < verysmallnumber)
-        g_CameraDistance = verysmallnumber;
+    //if (g_CameraDistance < verysmallnumber)
+    //    g_CameraDistance = verysmallnumber;
 }
 
 // Definição da função que será chamada sempre que o usuário pressionar alguma
@@ -1379,6 +1379,32 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
         fprintf(stdout,"Shaders recarregados!\n");
         fflush(stdout);
     }
+    glm::vec3 direction;
+    direction.x = cos(glm::radians(g_CameraYaw)) * cos(glm::radians(g_CameraPitch));
+    direction.y = sin(glm::radians(g_CameraPitch));
+    direction.z = sin(glm::radians(g_CameraYaw)) * cos(glm::radians(g_CameraPitch));
+    glm::vec3 camera_front = glm::normalize(direction);
+    glm::vec3 camera_right = glm::normalize(glm::cross(camera_front, glm::vec3(0.0f, 1.0f, 0.0f)));
+    glm::vec3 camera_up = glm::normalize(glm::cross(camera_right, camera_front));
+
+    float velocity = g_CameraSpeed * 0.1f;
+
+    if (action == GLFW_PRESS || action == GLFW_REPEAT)
+    {
+        if (key == GLFW_KEY_W)
+            g_CameraPosition += velocity * camera_front;
+        if (key == GLFW_KEY_S)
+            g_CameraPosition -= velocity * camera_front;
+        if (key == GLFW_KEY_A)
+            g_CameraPosition -= velocity * camera_right;
+        if (key == GLFW_KEY_D)
+            g_CameraPosition += velocity * camera_right;
+        if (key == GLFW_KEY_Q)
+            g_CameraPosition += velocity * camera_up;
+        if (key == GLFW_KEY_E)
+            g_CameraPosition -= velocity * camera_up;
+    }
+
 }
 
 // Definimos o callback para impressão de erros da GLFW no terminal
