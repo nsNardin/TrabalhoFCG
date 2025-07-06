@@ -4,7 +4,7 @@
 
 const int BOARD_WIDTH = 10;
 const int BOARD_HEIGHT = 10;
-const int BOMB_COUNTER = 6;
+const int BOMB_COUNTER = 5;
 
 class Block {
 public:
@@ -46,28 +46,6 @@ private:
         }
     }
 
-    // Reveal a block
-    /*void reveal(int x, int y) {
-        board_[x][y].revealed = true;
-        // If the block is a bomb, game over
-        if (board_[x][y].bomb) {
-            state_ = GameState::DEFEAT;
-        }
-        // Elif the counter is zero, recursively reveal all adjacent blocks
-        else if (board_[x][y].bomb_counter == 0) {
-            for (int dx = -1; dx <= 1; ++dx) {
-                for (int dy = -1; dy <= 1; ++dy) {
-                    if (dx == 0 && dy == 0) {
-                        continue;
-                    }
-                    if (x + dx < 0 || x + dx >= BOARD_WIDTH || y + dy < 0 || y + dy >= BOARD_HEIGHT) {
-                        continue;
-                    }
-                    reveal(x + dx, y + dy);
-                }
-            }
-        }
-    }*/
    void reveal(int x, int y) {
         if (board_[x][y].revealed || board_[x][y].flag) {
             return; // evita revelações repetidas ou em blocos com bandeira

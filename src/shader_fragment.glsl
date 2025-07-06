@@ -43,7 +43,7 @@ uniform vec4 bbox_max;
 // Variáveis para acesso das imagens de textura
 uniform sampler2D TextureImage0;
 uniform sampler2D TextureImage1;
-uniform sampler2D StoneTexture;
+uniform sampler2D GrassTexture;
 uniform sampler2D BombTexture;
 uniform sampler2D DirtTexture;
 uniform sampler2D Dirt1Texture;
@@ -153,16 +153,12 @@ void main()
 
     }
 
-    // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
-    vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
-
-    // Textura da iluminação própria do objeto
-    vec3 Kd1 = texture(TextureImage1, vec2(U,V)).rgb;
+    vec3 Kd3 = texture(TextureImage0, vec2(U,V)).rgb;
 
     // Equação de Iluminação
     float lambert = max(0,dot(n,l));
 
-    color.rgb = Kd0 * (lambert + 0.01) + Kd1 * (1.0 - lambert);
+    color.rgb = Kd3 * (lambert + 0.01);
 
     if (object_id == BOMB)
     {
@@ -182,7 +178,7 @@ void main()
     }else
     if (object_id == CUBE)
     {
-        vec3 Kd3 = texture(StoneTexture, vec2(U,V)).rgb;
+        vec3 Kd3 = texture(GrassTexture, vec2(U,V)).rgb;
         color.rgb = Kd3 * (lambert + 0.01);
     }else
     if (object_id == DIRT)
@@ -343,7 +339,7 @@ void main()
         U = (position_model.x - minx) / (maxx - minx);
         V = (position_model.z - minz) / (maxz - minz);
 
-        vec3 Kd6 = texture(StoneTexture, vec2(U,V)).rgb;
+        vec3 Kd6 = texture(GrassTexture, vec2(U,V)).rgb;
         color.rgb = Kd6 * (lambert + 0.01);
     }
 
