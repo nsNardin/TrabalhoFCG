@@ -440,7 +440,7 @@ int main(int argc, char* argv[])
         #define CUBE   3
 
         // Desenhamos o plano do chão
-        model = Matrix_Translate(BOARD_WIDTH/2,-0.5f,BOARD_HEIGHT/2)
+        model = Matrix_Translate(BOARD_WIDTH/2, 0.0f,BOARD_HEIGHT/2)
               * Matrix_Scale(BOARD_WIDTH/2 + 2, 0.0f, BOARD_HEIGHT/2 + 2);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, PLANE);
