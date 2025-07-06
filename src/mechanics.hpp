@@ -13,5 +13,5 @@
 
 # include "minesweeper_logic.hpp"
 
-// Given the blocks positions in camera coordinates 
-// Returns the coor
+
+
