@@ -225,15 +225,59 @@ GLint g_bbox_max_uniform;
 // Número de texturas carregadas pela função LoadTextureImage()
 GLuint g_NumLoadedTextures = 0;
 
+// Variáveis globais para acesso no callback
+glm::vec4 g_camera_position_c;
+glm::mat4 g_projection_matrix;
+glm::mat4 g_view_matrix;
+float g_ESPACO = 1.0f;
+Board g_board;
+
+
+glm::vec3 GetRayFromMouse(double mouseX, double mouseY, GLFWwindow* window, glm::mat4 projection, glm::mat4 view)
+{
+    int width, height;
+    glfwGetFramebufferSize(window, &width, &height);
+
+    float x = (2.0f * mouseX) / width - 1.0f;
+    float y = 1.0f - (2.0f * mouseY) / height;
+    glm::vec4 ray_clip = glm::vec4(x, y, -1.0f, 1.0f);
+
+    glm::vec4 ray_eye = glm::inverse(projection) * ray_clip;
+    ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0f, 0.0f);
+
+    glm::vec3 ray_world = glm::vec3(glm::inverse(view) * ray_eye);
+    return glm::normalize(ray_world);
+}
+
+bool RayIntersectsTopFace(glm::vec3 ray_origin, glm::vec3 ray_dir, glm::vec3 block_pos, float block_size, float& t_out)
+{
+    float y_plane = block_pos.y + block_size / 2.0f;
+
+    if (std::abs(ray_dir.y) < 1e-6f) return false;
+
+    float t = (y_plane - ray_origin.y) / ray_dir.y;
+    if (t < 0.0f) return false;
+
+    glm::vec3 hit = ray_origin + ray_dir * t;
+
+    if (hit.x >= block_pos.x - block_size/2 && hit.x <= block_pos.x + block_size/2 &&
+        hit.z >= block_pos.z - block_size/2 && hit.z <= block_pos.z + block_size/2)
+    {
+        t_out = t;
+        return true;
+    }
+    return false;
+}
+
+
 int main(int argc, char* argv[])
 {
 
-    const float ESPACO = 1.0f;
+    g_ESPACO = 1.0f;
+    g_board.init();
+    g_board.start();
 
-    Board board;
-    board.init();
-    board.start();
-    board.tryReveal(1, 1);
+    g_board.tryReveal(1, 1);
 
     // Inicializamos a biblioteca GLFW, utilizada para criar uma janela do
     // sistema operacional, onde poderemos renderizar com OpenGL.
@@ -400,6 +444,11 @@ int main(int argc, char* argv[])
         // Agora computamos a matriz de Projeção.
         glm::mat4 projection;
 
+        g_camera_position_c = camera_position_c;
+        g_projection_matrix = projection;
+        g_view_matrix = view;
+
+
         // Note que, no sistema de coordenadas da câmera, os planos near e far
         // estão no sentido negativo! Veja slides 176-204 do documento Aula_09_Projecoes.pdf.
         float nearplane = -0.1f;  // Posição do "near plane"
@@ -440,7 +489,7 @@ int main(int argc, char* argv[])
         #define CUBE   3
 
         // Desenhamos o plano do chão
-        model = Matrix_Translate(BOARD_WIDTH/2, 0.0f,BOARD_DEPTH/2)
+        model = Matrix_Translate(BOARD_WIDTH/2, -0.5f,BOARD_DEPTH/2)
               * Matrix_Scale(BOARD_WIDTH/2 + 2, 0.0f, BOARD_DEPTH/2 + 2);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, PLANE);
@@ -449,10 +498,10 @@ int main(int argc, char* argv[])
         // Desenhamos o cubo
     for (int x = 0; x < BOARD_WIDTH; ++x) {
         for (int y = 0; y < BOARD_DEPTH; ++y) {
-            const Block& block = board.getBlock(x, y);
+            const Block& block = g_board.getBlock(x, y);
 
-            float posX = x * ESPACO;
-            float posZ = y * ESPACO; // use z em vez de y para profundidade visual
+            float posX = x * g_ESPACO;
+            float posZ = y * g_ESPACO; // use z em vez de y para profundidade visual
             float posY = 0.0f;       // altura constante, pois não é 3D
 
 
@@ -1079,7 +1128,7 @@ double g_LastCursorPosX, g_LastCursorPosY;
 // Função callback chamada sempre que o usuário aperta algum dos botões do mouse
 void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+    /*if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
     {
         // Se o usuário pressionou o botão esquerdo do mouse, guardamos a
         // posição atual do cursor nas variáveis g_LastCursorPosX e
@@ -1088,7 +1137,45 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
         // com o botão esquerdo pressionado.
         glfwGetCursorPos(window, &g_LastCursorPosX, &g_LastCursorPosY);
         g_LeftMouseButtonPressed = true;
+    }*/
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+    {
+        double xpos, ypos;
+        glfwGetCursorPos(window, &xpos, &ypos);
+
+        glm::vec3 ray_origin = glm::vec3(g_camera_position_c);
+        glm::vec3 ray_dir = GetRayFromMouse(xpos, ypos, window, g_projection_matrix, g_view_matrix);
+
+        float closest_t = std::numeric_limits<float>::max();
+        int selected_x = -1, selected_y = -1;
+
+        for (int x = 0; x < BOARD_WIDTH; ++x)
+        {
+            for (int y = 0; y < BOARD_DEPTH; ++y)
+            {
+                float posX = x * g_ESPACO;
+                float posZ = y * g_ESPACO;
+                glm::vec3 block_center(posX, 0.0f, posZ);
+                float t;
+
+                if (RayIntersectsTopFace(ray_origin, ray_dir, block_center, g_ESPACO, t))
+                {
+                    if (t < closest_t)
+                    {
+                        closest_t = t;
+                        selected_x = x;
+                        selected_y = y;
+                    }
+                }
+            }
+        }
+
+        if (selected_x != -1 && selected_y != -1)
+        {
+            g_board.tryReveal(selected_x, selected_y);
+        }
     }
+
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
     {
         // Quando o usuário soltar o botão esquerdo do mouse, atualizamos a
@@ -1139,7 +1226,7 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
     // parâmetros que definem a posição da câmera dentro da cena virtual.
     // Assim, temos que o usuário consegue controlar a câmera.
 
-    if (g_LeftMouseButtonPressed)
+    if (g_RightMouseButtonPressed)
     {
         // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
         float dx = xpos - g_LastCursorPosX;
@@ -1165,7 +1252,7 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
         g_LastCursorPosY = ypos;
     }
 
-    if (g_RightMouseButtonPressed)
+    if (g_LeftMouseButtonPressed)
     {
         // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
         float dx = xpos - g_LastCursorPosX;
