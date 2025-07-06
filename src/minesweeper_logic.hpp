@@ -3,14 +3,9 @@
 #include <vector>
 
 const int BOARD_WIDTH = 10;
-<<<<<<< HEAD
-const int BOARD_HEIGHT = 10;
-const int BOMB_COUNTER = 5;
-=======
-const int BOARD_HEIGHT = 1;
 const int BOARD_DEPTH = 10;
-const int BOMB_COUNTER = 6;
->>>>>>> 5fe2f4d3d98ec92f0f2cbd35ee35fe708211850c
+const int BOARD_HEIGHT = 1;
+const int BOMB_COUNTER = 7;
 
 class Block {
 public:
@@ -52,10 +47,6 @@ private:
         }
     }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 5fe2f4d3d98ec92f0f2cbd35ee35fe708211850c
    void reveal(int x, int y) {
         if (board_[x][y].revealed || board_[x][y].flag) {
             return; // evita revelações repetidas ou em blocos com bandeira

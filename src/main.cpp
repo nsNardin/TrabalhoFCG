@@ -440,13 +440,8 @@ int main(int argc, char* argv[])
         #define CUBE   3
 
         // Desenhamos o plano do chão
-<<<<<<< HEAD
-        model = Matrix_Translate(BOARD_WIDTH/2,-0.5f,BOARD_HEIGHT/2)
-              * Matrix_Scale(BOARD_WIDTH/2 + 2, 0.0f, BOARD_HEIGHT/2 + 2);
-=======
         model = Matrix_Translate(BOARD_WIDTH/2, 0.0f,BOARD_DEPTH/2)
               * Matrix_Scale(BOARD_WIDTH/2 + 2, 0.0f, BOARD_DEPTH/2 + 2);
->>>>>>> 5fe2f4d3d98ec92f0f2cbd35ee35fe708211850c
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, PLANE);
         DrawVirtualObject("the_plane");
