@@ -141,11 +141,11 @@ void main()
         U = (position_model.x - minx) / (maxx - minx);
         V = (position_model.y - miny) / (maxy - miny);
     }
-    else if ( object_id == PLANE )
+    else 
+    if (object_id == PLANE)
     {
-        // Coordenadas de textura do plano, obtidas do arquivo OBJ.
-        U = texcoords.x;
-        V = texcoords.y;
+        vec3 Kd3 = texture(DirtTexture, vec2(U,V)).rgb;
+        color.rgb = Kd3 * (lambert + 0.01);
     }else 
     if (object_id == CUBE)
     {
