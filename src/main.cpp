@@ -391,6 +391,10 @@ int main(int argc, char* argv[])
     ObjModel cubemodel("../../data/cube.obj");
     ComputeNormals(&cubemodel);
     BuildTrianglesAndAddToVirtualScene(&cubemodel);
+    
+    ObjModel soldiermodel("../../data/soldier.obj");
+    ComputeNormals(&soldiermodel);
+    BuildTrianglesAndAddToVirtualScene(&soldiermodel);
 
     if ( argc > 1 )
     {
@@ -424,7 +428,7 @@ int main(int argc, char* argv[])
         // Conversaremos sobre sistemas de cores nas aulas de Modelos de Iluminação.
         //
         //           R     G     B     A
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClearColor(0.96f,0.87f,0.70f,1.0f);
 
         // "Pintamos" todos os pixels do framebuffer com a cor definida acima,
         // e também resetamos todos os pixels do Z-buffer (depth buffer).
@@ -528,6 +532,7 @@ int main(int argc, char* argv[])
         #define BUNNY  1
         #define PLANE  2
         #define CUBE   3
+        #define SOLDIER 4
 
         // Desenhamos o plano do chão
         model = Matrix_Translate(BOARD_WIDTH/2, -0.5f,BOARD_DEPTH/2)
@@ -537,49 +542,59 @@ int main(int argc, char* argv[])
         DrawVirtualObject("the_plane");
 
         // Desenhamos o cubo
-    for (int x = 0; x < BOARD_WIDTH; ++x) {
-        for (int y = 0; y < BOARD_DEPTH; ++y) {
-            const Block& block = g_board.getBlock(x, y);
+        for (int x = 0; x < BOARD_WIDTH; ++x) {
+            for (int y = 0; y < BOARD_DEPTH; ++y) {
+                const Block& block = g_board.getBlock(x, y);
 
-            float posX = x * g_ESPACO;
-            float posZ = y * g_ESPACO; // use z em vez de y para profundidade visual
-            float posY = 0.0f;       // altura constante, pois não é 3D
+                float posX = x * g_ESPACO;
+                float posZ = y * g_ESPACO; // use z em vez de y para profundidade visual
+                float posY = 0.0f;       // altura constante, pois não é 3D
 
 
-        if (block.revealed) {
-            if (block.bomb) {
-                glUniform1i(g_object_id_uniform, 4); // Vermelho - bomba revelada
+            if (block.revealed) {
+                if (block.bomb) {
+                    glUniform1i(g_object_id_uniform, 4); // Vermelho - bomba revelada
+                } else {
+                    // Revelado e não é bomba → mostra contador
+                    switch (block.bomb_counter) {
+                        case 0: glUniform1i(g_object_id_uniform, 5); break; // 0
+                        case 1: glUniform1i(g_object_id_uniform, 6); break; // 1
+                        case 2: glUniform1i(g_object_id_uniform, 7); break; // 2
+                        case 3: glUniform1i(g_object_id_uniform, 8); break; // 3
+                        case 4: glUniform1i(g_object_id_uniform, 9); break; // 4
+                        case 5: glUniform1i(g_object_id_uniform, 10); break; // 5
+                        case 6: glUniform1i(g_object_id_uniform, 11); break; // 6
+                        case 7: glUniform1i(g_object_id_uniform, 12); break; // 7
+                        case 8: glUniform1i(g_object_id_uniform, 13); break; // 8
+                        default: glUniform1i(g_object_id_uniform, 3); break; // Azul escuro ou genérico
+                    }
+                }
             } else {
-                // Revelado e não é bomba → mostra contador
-                switch (block.bomb_counter) {
-                    case 0: glUniform1i(g_object_id_uniform, 5); break; // 0
-                    case 1: glUniform1i(g_object_id_uniform, 6); break; // 1
-                    case 2: glUniform1i(g_object_id_uniform, 7); break; // 2
-                    case 3: glUniform1i(g_object_id_uniform, 8); break; // 3
-                    case 4: glUniform1i(g_object_id_uniform, 9); break; // 4
-                    case 5: glUniform1i(g_object_id_uniform, 10); break; // 5
-                    case 6: glUniform1i(g_object_id_uniform, 11); break; // 6
-                    case 7: glUniform1i(g_object_id_uniform, 12); break; // 7
-                    case 8: glUniform1i(g_object_id_uniform, 13); break; // 8
-                    default: glUniform1i(g_object_id_uniform, 3); break; // Azul escuro ou genérico
+                if (block.flag) {
+                    glUniform1i(g_object_id_uniform, 4); // bandeira
+                } else {
+                    glUniform1i(g_object_id_uniform, 3); // grama
                 }
             }
-        } else {
-            if (block.flag) {
-                glUniform1i(g_object_id_uniform, 4); // bandeira
-            } else {
-                glUniform1i(g_object_id_uniform, 3); // grama
+
+
+                glm::mat4 model = Matrix_Translate(posX -0.0f, posY -0.0f, posZ -0.0f)
+                                * Matrix_Scale(1.0f, 1.0f, 1.0f);
+
+                glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+                DrawVirtualObject("the_cube");
             }
         }
 
-
-            glm::mat4 model = Matrix_Translate(posX -0.0f, posY -0.0f, posZ -0.0f)
-                            * Matrix_Scale(1.0f, 1.0f, 1.0f);
-
-            glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-            DrawVirtualObject("the_cube");
-        }
-    }
+        // Desenhamos o modelo do soldado
+        model = Matrix_Translate(-5.0f,0.0f,0.0f)
+              * Matrix_Scale(4.0f, 4.0f, 4.0f)
+              * Matrix_Rotate_Z(g_AngleZ)
+              * Matrix_Rotate_Y(g_AngleY)
+              * Matrix_Rotate_X(-3.14/2);
+        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(g_object_id_uniform, SOLDIER);
+        DrawVirtualObject("14074_WWII_Soldier_with_flame_thrower");
 
 
 
@@ -1432,8 +1447,8 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
         if (key == GLFW_KEY_S) g_MoveBackward = true;
         if (key == GLFW_KEY_A) g_MoveLeft = true;
         if (key == GLFW_KEY_D) g_MoveRight = true;
-        if (key == GLFW_KEY_Q) g_MoveUp = true;
-        if (key == GLFW_KEY_E) g_MoveDown = true;
+        if (key == GLFW_KEY_SPACE) g_MoveUp = true;
+        if (key == GLFW_KEY_LEFT_CONTROL) g_MoveDown = true;
     }
 
     if (action == GLFW_RELEASE)
@@ -1442,8 +1457,8 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
         if (key == GLFW_KEY_S) g_MoveBackward = false;
         if (key == GLFW_KEY_A) g_MoveLeft = false;
         if (key == GLFW_KEY_D) g_MoveRight = false;
-        if (key == GLFW_KEY_Q) g_MoveUp = false;
-        if (key == GLFW_KEY_E) g_MoveDown = false;
+        if (key == GLFW_KEY_SPACE) g_MoveUp = false;
+        if (key == GLFW_KEY_LEFT_CONTROL) g_MoveDown = false;
     }
 
 

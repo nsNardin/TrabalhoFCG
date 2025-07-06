@@ -34,6 +34,7 @@ uniform mat4 projection;
 #define DIRT7  12
 #define DIRT8  13
 #define FLAG   14
+#define SOLDIER 15
 uniform int object_id;
 
 // Parâmetros da axis-aligned bounding box (AABB) do modelo
@@ -89,6 +90,9 @@ void main()
     // Coordenadas de textura U e V
     float U = 0.0;
     float V = 0.0;
+
+    float lambert = max(0,dot(n,l));
+
 
     if ( object_id == SPHERE )
     {
@@ -150,15 +154,8 @@ void main()
 
         U = (position_model.x - minx) / (maxx - minx);
         V = (position_model.z - minz) / (maxz - minz);
-
+    
     }
-
-    vec3 Kd3 = texture(TextureImage0, vec2(U,V)).rgb;
-
-    // Equação de Iluminação
-    float lambert = max(0,dot(n,l));
-
-    color.rgb = Kd3 * (lambert + 0.01);
 
     if (object_id == BOMB)
     {
@@ -194,8 +191,25 @@ void main()
         U = (position_model.x - minx) / (maxx - minx);
         V = (position_model.z - minz) / (maxz - minz);
 
+        //vec3 Kd5 = texture(DirtTexture, vec2(U,V)).rgb;
+        //color.rgb = Kd5 * (lambert + 0.01);
+
         vec3 Kd5 = texture(DirtTexture, vec2(U,V)).rgb;
-        color.rgb = Kd5 * (lambert + 0.01);
+
+        vec3 light_dir = normalize(vec3(1.0, 1.0, 0.0));
+        vec3 view_dir = normalize(vec3(camera_position - p));
+        vec3 halfway_dir = normalize(light_dir + view_dir);
+        float shininess = 6.0;
+
+        float diff = max(dot(vec3(n), light_dir), 0.0);
+        float spec = pow(max(dot(vec3(n), halfway_dir), 0.0), shininess);
+
+        vec3 ambient = 0.1 * Kd5;
+        vec3 diffuse = 0.6 * Kd5 * diff;
+        vec3 specular = 0.1 * vec3(1.0) * spec;
+
+        color.rgb = ambient + diffuse + specular;
+
 
     }else
     if (object_id == DIRT1)
@@ -211,8 +225,24 @@ void main()
         U = (position_model.x - minx) / (maxx - minx);
         V = (position_model.z - minz) / (maxz - minz);
 
-        vec3 Kd6 = texture(Dirt1Texture, vec2(U,V)).rgb;
-        color.rgb = Kd6 * (lambert + 0.01);
+        //vec3 Kd5 = texture(DirtTexture, vec2(U,V)).rgb;
+        //color.rgb = Kd5 * (lambert + 0.01);
+
+        vec3 Kd5 = texture(Dirt1Texture, vec2(U,V)).rgb;
+
+        vec3 light_dir = normalize(vec3(1.0, 1.0, 0.0));
+        vec3 view_dir = normalize(vec3(camera_position - p));
+        vec3 halfway_dir = normalize(light_dir + view_dir);
+        float shininess = 6.0;
+
+        float diff = max(dot(vec3(n), light_dir), 0.0);
+        float spec = pow(max(dot(vec3(n), halfway_dir), 0.0), shininess);
+
+        vec3 ambient = 0.1 * Kd5;
+        vec3 diffuse = 0.6 * Kd5 * diff;
+        vec3 specular = 0.1 * vec3(1.0) * spec;
+
+        color.rgb = ambient + diffuse + specular;
     }else
     if (object_id == DIRT2)
     {
@@ -227,8 +257,24 @@ void main()
         U = (position_model.x - minx) / (maxx - minx);
         V = (position_model.z - minz) / (maxz - minz);
 
-        vec3 Kd6 = texture(Dirt2Texture, vec2(U,V)).rgb;
-        color.rgb = Kd6 * (lambert + 0.01);
+        //vec3 Kd5 = texture(DirtTexture, vec2(U,V)).rgb;
+        //color.rgb = Kd5 * (lambert + 0.01);
+
+        vec3 Kd5 = texture(Dirt2Texture, vec2(U,V)).rgb;
+
+        vec3 light_dir = normalize(vec3(1.0, 1.0, 0.0));
+        vec3 view_dir = normalize(vec3(camera_position - p));
+        vec3 halfway_dir = normalize(light_dir + view_dir);
+        float shininess = 6.0;
+
+        float diff = max(dot(vec3(n), light_dir), 0.0);
+        float spec = pow(max(dot(vec3(n), halfway_dir), 0.0), shininess);
+
+        vec3 ambient = 0.1 * Kd5;
+        vec3 diffuse = 0.6 * Kd5 * diff;
+        vec3 specular = 0.1 * vec3(1.0) * spec;
+
+        color.rgb = ambient + diffuse + specular;
     }else
     if (object_id == DIRT3)
     {
@@ -243,8 +289,24 @@ void main()
         U = (position_model.x - minx) / (maxx - minx);
         V = (position_model.z - minz) / (maxz - minz);
 
-        vec3 Kd6 = texture(Dirt3Texture, vec2(U,V)).rgb;
-        color.rgb = Kd6 * (lambert + 0.01);
+        //vec3 Kd5 = texture(DirtTexture, vec2(U,V)).rgb;
+        //color.rgb = Kd5 * (lambert + 0.01);
+
+        vec3 Kd5 = texture(Dirt3Texture, vec2(U,V)).rgb;
+
+        vec3 light_dir = normalize(vec3(1.0, 1.0, 0.0));
+        vec3 view_dir = normalize(vec3(camera_position - p));
+        vec3 halfway_dir = normalize(light_dir + view_dir);
+        float shininess = 6.0;
+
+        float diff = max(dot(vec3(n), light_dir), 0.0);
+        float spec = pow(max(dot(vec3(n), halfway_dir), 0.0), shininess);
+
+        vec3 ambient = 0.1 * Kd5;
+        vec3 diffuse = 0.6 * Kd5 * diff;
+        vec3 specular = 0.1 * vec3(1.0) * spec;
+
+        color.rgb = ambient + diffuse + specular;
     }else
     if (object_id == DIRT4)
     {
@@ -259,8 +321,24 @@ void main()
         U = (position_model.x - minx) / (maxx - minx);
         V = (position_model.z - minz) / (maxz - minz);
 
-        vec3 Kd6 = texture(Dirt4Texture, vec2(U,V)).rgb;
-        color.rgb = Kd6 * (lambert + 0.01);
+        //vec3 Kd5 = texture(DirtTexture, vec2(U,V)).rgb;
+        //color.rgb = Kd5 * (lambert + 0.01);
+
+        vec3 Kd5 = texture(Dirt4Texture, vec2(U,V)).rgb;
+
+        vec3 light_dir = normalize(vec3(1.0, 1.0, 0.0));
+        vec3 view_dir = normalize(vec3(camera_position - p));
+        vec3 halfway_dir = normalize(light_dir + view_dir);
+        float shininess = 6.0;
+
+        float diff = max(dot(vec3(n), light_dir), 0.0);
+        float spec = pow(max(dot(vec3(n), halfway_dir), 0.0), shininess);
+
+        vec3 ambient = 0.1 * Kd5;
+        vec3 diffuse = 0.6 * Kd5 * diff;
+        vec3 specular = 0.1 * vec3(1.0) * spec;
+
+        color.rgb = ambient + diffuse + specular;
     }else
     if (object_id == DIRT5)
     {
@@ -275,8 +353,24 @@ void main()
         U = (position_model.x - minx) / (maxx - minx);
         V = (position_model.z - minz) / (maxz - minz);
 
-        vec3 Kd6 = texture(Dirt5Texture, vec2(U,V)).rgb;
-        color.rgb = Kd6 * (lambert + 0.01);
+        //vec3 Kd5 = texture(DirtTexture, vec2(U,V)).rgb;
+        //color.rgb = Kd5 * (lambert + 0.01);
+
+        vec3 Kd5 = texture(Dirt5Texture, vec2(U,V)).rgb;
+
+        vec3 light_dir = normalize(vec3(1.0, 1.0, 0.0));
+        vec3 view_dir = normalize(vec3(camera_position - p));
+        vec3 halfway_dir = normalize(light_dir + view_dir);
+        float shininess = 6.0;
+
+        float diff = max(dot(vec3(n), light_dir), 0.0);
+        float spec = pow(max(dot(vec3(n), halfway_dir), 0.0), shininess);
+
+        vec3 ambient = 0.1 * Kd5;
+        vec3 diffuse = 0.6 * Kd5 * diff;
+        vec3 specular = 0.1 * vec3(1.0) * spec;
+
+        color.rgb = ambient + diffuse + specular;
     }else
     if (object_id == DIRT6)
     {
@@ -291,8 +385,24 @@ void main()
         U = (position_model.x - minx) / (maxx - minx);
         V = (position_model.z - minz) / (maxz - minz);
 
-        vec3 Kd6 = texture(Dirt6Texture, vec2(U,V)).rgb;
-        color.rgb = Kd6 * (lambert + 0.01);
+        //vec3 Kd5 = texture(DirtTexture, vec2(U,V)).rgb;
+        //color.rgb = Kd5 * (lambert + 0.01);
+
+        vec3 Kd5 = texture(Dirt6Texture, vec2(U,V)).rgb;
+
+        vec3 light_dir = normalize(vec3(1.0, 1.0, 0.0));
+        vec3 view_dir = normalize(vec3(camera_position - p));
+        vec3 halfway_dir = normalize(light_dir + view_dir);
+        float shininess = 6.0;
+
+        float diff = max(dot(vec3(n), light_dir), 0.0);
+        float spec = pow(max(dot(vec3(n), halfway_dir), 0.0), shininess);
+
+        vec3 ambient = 0.1 * Kd5;
+        vec3 diffuse = 0.6 * Kd5 * diff;
+        vec3 specular = 0.1 * vec3(1.0) * spec;
+
+        color.rgb = ambient + diffuse + specular;
     }else
     if (object_id == DIRT7)
     {
@@ -307,8 +417,24 @@ void main()
         U = (position_model.x - minx) / (maxx - minx);
         V = (position_model.z - minz) / (maxz - minz);
 
-        vec3 Kd6 = texture(Dirt7Texture, vec2(U,V)).rgb;
-        color.rgb = Kd6 * (lambert + 0.01);
+        //vec3 Kd5 = texture(DirtTexture, vec2(U,V)).rgb;
+        //color.rgb = Kd5 * (lambert + 0.01);
+
+        vec3 Kd5 = texture(Dirt7Texture, vec2(U,V)).rgb;
+
+        vec3 light_dir = normalize(vec3(1.0, 1.0, 0.0));
+        vec3 view_dir = normalize(vec3(camera_position - p));
+        vec3 halfway_dir = normalize(light_dir + view_dir);
+        float shininess = 6.0;
+
+        float diff = max(dot(vec3(n), light_dir), 0.0);
+        float spec = pow(max(dot(vec3(n), halfway_dir), 0.0), shininess);
+
+        vec3 ambient = 0.1 * Kd5;
+        vec3 diffuse = 0.6 * Kd5 * diff;
+        vec3 specular = 0.1 * vec3(1.0) * spec;
+
+        color.rgb = ambient + diffuse + specular;
     }else
     if (object_id == DIRT8)
     {
@@ -323,8 +449,24 @@ void main()
         U = (position_model.x - minx) / (maxx - minx);
         V = (position_model.z - minz) / (maxz - minz);
 
-        vec3 Kd6 = texture(Dirt8Texture, vec2(U,V)).rgb;
-        color.rgb = Kd6 * (lambert + 0.01);
+        //vec3 Kd5 = texture(DirtTexture, vec2(U,V)).rgb;
+        //color.rgb = Kd5 * (lambert + 0.01);
+
+        vec3 Kd5 = texture(Dirt8Texture, vec2(U,V)).rgb;
+
+        vec3 light_dir = normalize(vec3(1.0, 1.0, 0.0));
+        vec3 view_dir = normalize(vec3(camera_position - p));
+        vec3 halfway_dir = normalize(light_dir + view_dir);
+        float shininess = 6.0;
+
+        float diff = max(dot(vec3(n), light_dir), 0.0);
+        float spec = pow(max(dot(vec3(n), halfway_dir), 0.0), shininess);
+
+        vec3 ambient = 0.1 * Kd5;
+        vec3 diffuse = 0.6 * Kd5 * diff;
+        vec3 specular = 0.1 * vec3(1.0) * spec;
+
+        color.rgb = ambient + diffuse + specular;
     }else
     if (object_id == FLAG)
     {
@@ -341,7 +483,44 @@ void main()
 
         vec3 Kd6 = texture(GrassTexture, vec2(U,V)).rgb;
         color.rgb = Kd6 * (lambert + 0.01);
+    }else 
+    if (object_id == SOLDIER)
+    {
+        // --- Coordenadas de textura planar XZ ---
+        float minx = bbox_min.x;
+        float maxx = bbox_max.x;
+
+        float minz = bbox_min.z;
+        float maxz = bbox_max.z;
+
+        U = (position_model.x - minx) / (maxx - minx);
+        V = (position_model.z - minz) / (maxz - minz);
+
+        vec3 Kd = texture(GrassTexture, vec2(U,V)).rgb;
+
+        // --- Parâmetros do modelo Blinn-Phong ---
+        vec3 light_dir = normalize(vec3(1.0, 1.0, 0.0)); // mesmo vetor l
+        vec3 view_dir = normalize(vec3(camera_position - p));
+        vec3 halfway_dir = normalize(light_dir + view_dir);
+        float shininess = 1.0;
+
+        float diff = max(dot(vec3(n), light_dir), 0.0);
+        float spec = pow(max(dot(vec3(n), halfway_dir), 0.0), shininess);
+
+        vec3 ambient = 0.1 * Kd;
+        vec3 diffuse = 0.6 * Kd * diff;
+        vec3 specular = 4 * vec3(1.0); // cor do brilho = branco
+
+        color.rgb = ambient + diffuse + specular;
+    }else {
+        vec3 Kd3 = texture(TextureImage0, vec2(U,V)).rgb;
+
+        // Equação de Iluminação
+        float lambert = max(0,dot(n,l));
+
+        color.rgb = Kd3 * (lambert + 0.01);
     }
+
 
     // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
     // necessário:
@@ -359,6 +538,6 @@ void main()
 
     // Cor final com correção gamma, considerando monitor sRGB.
     // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
-    color.rgb = pow(color.rgb, vec3(1.0,1.0,1.0)/2.2);
+    color.rgb = pow(color.rgb, vec3(1.0,1.0,1.0)/2.5);
 } 
 

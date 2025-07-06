@@ -2,10 +2,10 @@
 #include <random>
 #include <vector>
 
-const int BOARD_WIDTH = 30;
-const int BOARD_DEPTH = 30;
+const int BOARD_WIDTH = 10;
+const int BOARD_DEPTH = 10;
 const int BOARD_HEIGHT = 1;
-const int BOMB_COUNTER = 200;
+const int BOMB_COUNTER = 5;
 
 class Block {
 public:
