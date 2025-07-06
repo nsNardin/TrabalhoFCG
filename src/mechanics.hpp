@@ -21,7 +21,7 @@ bool inField(std::vector<float> position){
     if (position[0] < 0 
         || position[0] > BOARD_WIDTH 
         || position[1] < 0 
-        || position[1] > BOARD_HEIGHT 
+        || position[1] > BOARD_DEPTH 
         || position[2] < 0 
         || position[2] > BOARD_DEPTH){
         return false;
