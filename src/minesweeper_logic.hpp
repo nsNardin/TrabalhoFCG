@@ -3,8 +3,14 @@
 #include <vector>
 
 const int BOARD_WIDTH = 10;
+<<<<<<< HEAD
 const int BOARD_HEIGHT = 10;
 const int BOMB_COUNTER = 5;
+=======
+const int BOARD_HEIGHT = 1;
+const int BOARD_DEPTH = 10;
+const int BOMB_COUNTER = 6;
+>>>>>>> 5fe2f4d3d98ec92f0f2cbd35ee35fe708211850c
 
 class Block {
 public:
@@ -23,7 +29,7 @@ enum class GameState {
 
 class Board {
 private:
-    Block board_[BOARD_WIDTH][BOARD_HEIGHT] = {};
+    Block board_[BOARD_WIDTH][BOARD_DEPTH] = {};
     GameState state_ = GameState::UNSTARTED;
 
     // Place a bomb at the given coordinates.
@@ -38,7 +44,7 @@ private:
                 if (dx == 0 && dy == 0) {
                     continue;
                 }
-                if (x + dx < 0 || x + dx >= BOARD_WIDTH || y + dy < 0 || y + dy >= BOARD_HEIGHT) {
+                if (x + dx < 0 || x + dx >= BOARD_WIDTH || y + dy < 0 || y + dy >= BOARD_DEPTH) {
                     continue;
                 }
                 ++board_[x + dx][y + dy].bomb_counter;
@@ -46,6 +52,10 @@ private:
         }
     }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5fe2f4d3d98ec92f0f2cbd35ee35fe708211850c
    void reveal(int x, int y) {
         if (board_[x][y].revealed || board_[x][y].flag) {
             return; // evita revelações repetidas ou em blocos com bandeira
@@ -61,7 +71,7 @@ private:
                     if (dx == 0 && dy == 0) continue;
                     int nx = x + dx;
                     int ny = y + dy;
-                    if (nx >= 0 && nx < BOARD_WIDTH && ny >= 0 && ny < BOARD_HEIGHT) {
+                    if (nx >= 0 && nx < BOARD_WIDTH && ny >= 0 && ny < BOARD_DEPTH) {
                         reveal(nx, ny);
                     }
                 }
@@ -72,7 +82,7 @@ private:
     // Check for victory
     bool checkVictory() {
         for (int x = 0; x < BOARD_WIDTH; ++x) {
-            for (int y = 0; y < BOARD_HEIGHT; ++y) {
+            for (int y = 0; y < BOARD_DEPTH; ++y) {
                 if (!board_[x][y].revealed && !board_[x][y].bomb) {
                     return false;
                 }
@@ -86,7 +96,7 @@ private:
         std::random_device rd;
         std::mt19937 mt(rd());
         std::uniform_int_distribution<int> dist_x(0, BOARD_WIDTH - 1);
-        std::uniform_int_distribution<int> dist_y(0, BOARD_HEIGHT - 1);
+        std::uniform_int_distribution<int> dist_y(0, BOARD_DEPTH - 1);
         int placed = 0;
         while (placed < n) {
             int x = dist_x(mt);
@@ -114,7 +124,7 @@ public:
     // Initializes the board.
     void init() {
         for (int x = 0; x < BOARD_WIDTH; ++x) {
-            for (int y = 0; y < BOARD_HEIGHT; ++y) {
+            for (int y = 0; y < BOARD_DEPTH; ++y) {
                 board_[x][y] = {};
             }
         }
