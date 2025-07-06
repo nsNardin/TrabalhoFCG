@@ -198,7 +198,7 @@ bool g_MiddleMouseButtonPressed = false; // Análogo para botão do meio do mous
 glm::vec3 g_CameraPosition = glm::vec3(BOARD_WIDTH/2, BOARD_WIDTH+BOARD_DEPTH/2, BOARD_DEPTH/2);
 float g_CameraYaw = 90.0f;  // olha para -Z
 float g_CameraPitch = -89.9f;
-float g_CameraSpeed = 10.0f;
+float g_CameraSpeed = BOARD_WIDTH+BOARD_DEPTH/8;
 float g_MouseSensitivity = 0.2f;
 
 
@@ -234,6 +234,14 @@ glm::mat4 g_projection_matrix;
 glm::mat4 g_view_matrix;
 float g_ESPACO = 1.0f;
 Board g_board;
+
+//Flags globais de movimento da camera livre
+bool g_MoveForward = false;
+bool g_MoveBackward = false;
+bool g_MoveLeft = false;
+bool g_MoveRight = false;
+bool g_MoveUp = false;
+bool g_MoveDown = false;
 
 
 glm::vec3 GetRayFromMouse(double mouseX, double mouseY, GLFWwindow* window, glm::mat4 projection, glm::mat4 view)
@@ -279,8 +287,6 @@ int main(int argc, char* argv[])
     g_ESPACO = 1.0f;
     g_board.init();
     g_board.start();
-
-    g_board.tryReveal(1, 1);
 
     // Inicializamos a biblioteca GLFW, utilizada para criar uma janela do
     // sistema operacional, onde poderemos renderizar com OpenGL.
@@ -403,9 +409,13 @@ int main(int argc, char* argv[])
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
 
+    float previous_time = (float)glfwGetTime();
+    float delta_t = 0.0f;
+
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
     {
+       
         // Aqui executamos as operações de renderização
 
         // Definimos a cor do "fundo" do framebuffer como branco.  Tal cor é
@@ -428,12 +438,39 @@ int main(int argc, char* argv[])
         // variáveis g_CameraDistance, g_CameraPhi, e g_CameraTheta são
         // controladas pelo mouse do usuário. Veja as funções CursorPosCallback()
         // e ScrollCallback().
+        
+        
+        // === Atualização do tempo (delta_t) ===
+        float current_time = (float)glfwGetTime();
+        delta_t = current_time - previous_time;
+        previous_time = current_time;
+
+        // === Atualização da posição da câmera com base nas teclas pressionadas ===
         glm::vec3 front;
         front.x = cos(glm::radians(g_CameraYaw)) * cos(glm::radians(g_CameraPitch));
         front.y = sin(glm::radians(g_CameraPitch));
         front.z = sin(glm::radians(g_CameraYaw)) * cos(glm::radians(g_CameraPitch));
         glm::vec3 camera_front = glm::normalize(front);
-        glm::vec3 camera_up = glm::vec3(0.0f, 1.0f, 0.0f);
+
+        glm::vec3 camera_right = glm::normalize(glm::cross(camera_front, glm::vec3(0.0f, 1.0f, 0.0f)));
+        glm::vec3 camera_up = glm::normalize(glm::cross(camera_right, camera_front));
+
+        float velocity = g_CameraSpeed * delta_t;
+
+        if (g_MoveForward)  g_CameraPosition += velocity * camera_front;
+        if (g_MoveBackward) g_CameraPosition -= velocity * camera_front;
+        if (g_MoveLeft)     g_CameraPosition -= velocity * camera_right;
+        if (g_MoveRight)    g_CameraPosition += velocity * camera_right;
+        if (g_MoveUp)       g_CameraPosition += velocity * camera_up;
+        if (g_MoveDown)     g_CameraPosition -= velocity * camera_up;
+        /*glm::vec3 front;
+        front.x = cos(glm::radians(g_CameraYaw)) * cos(glm::radians(g_CameraPitch));
+        front.y = sin(glm::radians(g_CameraPitch));
+        front.z = sin(glm::radians(g_CameraYaw)) * cos(glm::radians(g_CameraPitch));
+        glm::vec3 camera_front = glm::normalize(front);
+        glm::vec3 camera_up = glm::vec3(0.0f, 1.0f, 0.0f);*/
+
+
         glm::vec3 camera_target = g_CameraPosition + camera_front;
 
         glm::vec4 camera_position_c = glm::vec4(g_CameraPosition, 1.0f);
@@ -1389,21 +1426,26 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
 
     float velocity = g_CameraSpeed * 0.1f;
 
-    if (action == GLFW_PRESS || action == GLFW_REPEAT)
+    if (action == GLFW_PRESS)
     {
-        if (key == GLFW_KEY_W)
-            g_CameraPosition += velocity * camera_front;
-        if (key == GLFW_KEY_S)
-            g_CameraPosition -= velocity * camera_front;
-        if (key == GLFW_KEY_A)
-            g_CameraPosition -= velocity * camera_right;
-        if (key == GLFW_KEY_D)
-            g_CameraPosition += velocity * camera_right;
-        if (key == GLFW_KEY_Q)
-            g_CameraPosition += velocity * camera_up;
-        if (key == GLFW_KEY_E)
-            g_CameraPosition -= velocity * camera_up;
+        if (key == GLFW_KEY_W) g_MoveForward = true;
+        if (key == GLFW_KEY_S) g_MoveBackward = true;
+        if (key == GLFW_KEY_A) g_MoveLeft = true;
+        if (key == GLFW_KEY_D) g_MoveRight = true;
+        if (key == GLFW_KEY_Q) g_MoveUp = true;
+        if (key == GLFW_KEY_E) g_MoveDown = true;
     }
+
+    if (action == GLFW_RELEASE)
+    {
+        if (key == GLFW_KEY_W) g_MoveForward = false;
+        if (key == GLFW_KEY_S) g_MoveBackward = false;
+        if (key == GLFW_KEY_A) g_MoveLeft = false;
+        if (key == GLFW_KEY_D) g_MoveRight = false;
+        if (key == GLFW_KEY_Q) g_MoveUp = false;
+        if (key == GLFW_KEY_E) g_MoveDown = false;
+    }
+
 
 }
 
