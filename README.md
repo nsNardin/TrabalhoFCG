@@ -31,6 +31,9 @@ Soldadinho: (coordenadas locais)
   Shift+Z: Rotaciona em -X
   C: Reseta posição inicial
 
+
+![WhatsApp Image 2025-07-06 at 21 39 22_30356d69](https://github.com/user-attachments/assets/c0e7e710-827b-4334-86d4-45b6a57ed313)
+
   Para compilar:
 --- Windows com VSCode (Visual Studio Code)
 -------------------------------------------
