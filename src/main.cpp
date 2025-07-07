@@ -201,6 +201,8 @@ float g_CameraPitch = -89.9f;
 float g_CameraSpeed = BOARD_WIDTH+BOARD_DEPTH/8;
 float g_MouseSensitivity = 0.2f;
 
+glm::vec3 g_SoldierPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+
 
 // Variáveis que controlam rotação do antebraço
 float g_ForearmAngleZ = 0.0f;
@@ -464,12 +466,12 @@ int main(int argc, char* argv[])
 
         float velocity = g_CameraSpeed * delta_t;
 
-        if (g_MoveForward)  g_CameraPosition += velocity * camera_front;
-        if (g_MoveBackward) g_CameraPosition -= velocity * camera_front;
-        if (g_MoveLeft)     g_CameraPosition -= velocity * camera_right;
-        if (g_MoveRight)    g_CameraPosition += velocity * camera_right;
-        if (g_MoveUp)       g_CameraPosition += velocity * camera_up;
-        if (g_MoveDown)     g_CameraPosition -= velocity * camera_up;
+        if (g_MoveForward)  g_SoldierPosition += velocity * camera_front;
+        if (g_MoveBackward) g_SoldierPosition -= velocity * camera_front;
+        if (g_MoveLeft)     g_SoldierPosition -= velocity * camera_right;
+        if (g_MoveRight)    g_SoldierPosition += velocity * camera_right;
+        if (g_MoveUp)       g_SoldierPosition += velocity * camera_up;
+        if (g_MoveDown)     g_SoldierPosition -= velocity * camera_up;
         /*glm::vec3 front;
         front.x = cos(glm::radians(g_CameraYaw)) * cos(glm::radians(g_CameraPitch));
         front.y = sin(glm::radians(g_CameraPitch));
@@ -590,11 +592,11 @@ int main(int argc, char* argv[])
         }
 
         // Desenhamos o modelo do soldado
-        model = Matrix_Translate(-5.0f,0.0f,0.0f)
-              * Matrix_Scale(4.0f, 4.0f, 4.0f)
-              * Matrix_Rotate_Z(g_AngleZ)
-              * Matrix_Rotate_Y(g_SoldierAngleY)
-              * Matrix_Rotate_X(-3.14/2 + g_AngleX);
+        model = Matrix_Translate(g_SoldierPosition.x, g_SoldierPosition.y, g_SoldierPosition.z)
+            * Matrix_Scale(4.0f, 4.0f, 4.0f)
+            * Matrix_Rotate_Z(g_AngleZ)
+            * Matrix_Rotate_Y(g_SoldierAngleY)
+            * Matrix_Rotate_X(-3.14f/2 + g_AngleX);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, SOLDIER);
         DrawVirtualObject("14074_WWII_Soldier_with_flame_thrower");
