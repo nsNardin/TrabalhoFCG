@@ -24,8 +24,11 @@ Mouse:
 
 Soldadinho: (coordenadas locais)
   Z: Rotaciona em Z
+  Shift+Z: Rotaciona em -Z
   Y: Rotaciona em Y
+  Shift+Z: Rotaciona em -Y
   X: Rotaciona em X
+  Shift+Z: Rotaciona em -X
   C: Reseta posição inicial
 
   Para compilar:
