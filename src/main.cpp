@@ -415,6 +415,7 @@ int main(int argc, char* argv[])
 
     float previous_time = (float)glfwGetTime();
     float delta_t = 0.0f;
+    float g_SoldierAngleY = 0.0f;
 
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
@@ -448,6 +449,8 @@ int main(int argc, char* argv[])
         float current_time = (float)glfwGetTime();
         delta_t = current_time - previous_time;
         previous_time = current_time;
+        g_SoldierAngleY += 1.0f * delta_t; // Velocidade de rotação: 1 rad/s (ajuste como quiser)
+
 
         // === Atualização da posição da câmera com base nas teclas pressionadas ===
         glm::vec3 front;
@@ -590,7 +593,7 @@ int main(int argc, char* argv[])
         model = Matrix_Translate(-5.0f,0.0f,0.0f)
               * Matrix_Scale(4.0f, 4.0f, 4.0f)
               * Matrix_Rotate_Z(g_AngleZ)
-              * Matrix_Rotate_Y(g_AngleY)
+              * Matrix_Rotate_Y(g_SoldierAngleY)
               * Matrix_Rotate_X(-3.14/2 + g_AngleX);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, SOLDIER);
