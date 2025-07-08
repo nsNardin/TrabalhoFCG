@@ -200,6 +200,7 @@ float g_CameraYaw = 90.0f;  // olha para -Z
 float g_CameraPitch = -89.9f;
 float g_CameraSpeed = BOARD_WIDTH+BOARD_DEPTH/8;
 float g_MouseSensitivity = 0.2f;
+float cameraRadius = 10.0f;
 
 glm::vec3 g_SoldierPosition = glm::vec3(0.0f, 0.0f, 0.0f);
 
@@ -480,14 +481,29 @@ int main(int argc, char* argv[])
         glm::vec3 camera_up = glm::vec3(0.0f, 1.0f, 0.0f);*/
 
 
-        glm::vec3 camera_target = g_CameraPosition + camera_front;
 
-        glm::vec4 camera_position_c = glm::vec4(g_CameraPosition, 1.0f);
-        glm::vec4 camera_lookat_l = glm::vec4(camera_target, 1.0f);
-        glm::vec4 camera_view_vector = camera_lookat_l - camera_position_c;
-        glm::vec4 camera_up_vector = glm::vec4(camera_up, 0.0f);
+        // converte yaw/pitch em offset esférico
+        glm::vec3 offset;
+        offset.x = cameraRadius * cos(glm::radians(g_CameraPitch)) * cos(glm::radians(g_CameraYaw));
+        offset.y = cameraRadius * sin(glm::radians(g_CameraPitch));
+        offset.z = cameraRadius * cos(glm::radians(g_CameraPitch)) * sin(glm::radians(g_CameraYaw));
 
-        glm::mat4 view = Matrix_Camera_View(camera_position_c, camera_view_vector, camera_up_vector);
+        // posição da câmera = posição do soldado + offset
+        glm::vec3 cameraPos = g_SoldierPosition + offset;
+
+        // direção (view vector) apontando do observador para o soldado
+        glm::vec3 viewDir = glm::normalize(g_SoldierPosition - cameraPos);
+
+        // monta os vetores em vec4 pra usar no Matrix_Camera_View
+        glm::vec4 camera_position_c  = glm::vec4(cameraPos,   1.0f);
+        glm::vec4 camera_view_vector = glm::vec4(viewDir,     0.0f);
+        glm::vec4 camera_up_vector   = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+
+        // finalmente, a view matrix “look‑at” em modo TPS
+        glm::mat4 view = Matrix_Camera_View(camera_position_c,
+                                            camera_view_vector,
+                                            camera_up_vector);
+
 
 
         // Agora computamos a matriz de Projeção.
@@ -1345,9 +1361,9 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
     // Atualizamos a distância da câmera para a origem utilizando a
     // movimentação da "rodinha", simulando um ZOOM.
     //g_CameraDistance -= 0.1f*yoffset;
-    g_CameraSpeed += yoffset * 0.1f;
-    if (g_CameraSpeed < 0.1f)
-        g_CameraSpeed = 0.1f;   
+    cameraRadius += yoffset * 0.1f;
+    if (cameraRadius < 0.1f)
+        cameraRadius = 0.1f;   
 
     // Uma câmera look-at nunca pode estar exatamente "em cima" do ponto para
     // onde ela está olhando, pois isto gera problemas de divisão por zero na
