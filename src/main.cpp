@@ -453,12 +453,6 @@ int main(int argc, char* argv[])
 
         float velocity = g_CameraSpeed * delta_t;
 
-        if (g_MoveForward)  g_SoldierPosition -= velocity * camera_front;
-        if (g_MoveBackward) g_SoldierPosition += velocity * camera_front;
-        if (g_MoveLeft)     g_SoldierPosition += velocity * camera_right;
-        if (g_MoveRight)    g_SoldierPosition -= velocity * camera_right;
-        if (g_MoveUp)       g_SoldierPosition += velocity * camera_up;
-        if (g_MoveDown)     g_SoldierPosition -= velocity * camera_up;
         /*glm::vec3 front;
         front.x = cos(glm::radians(g_CameraYaw)) * cos(glm::radians(g_CameraPitch));
         front.y = sin(glm::radians(g_CameraPitch));
@@ -601,7 +595,7 @@ int main(int argc, char* argv[])
 
         // Desenhamos o modelo do soldado
         model = Matrix_Translate(g_SoldierPosition.x, g_SoldierPosition.y, g_SoldierPosition.z)
-            * Matrix_Scale(4.0f, 4.0f, 4.0f)
+            * Matrix_Scale(1.0f, 1.0f, 1.0f)
             * Matrix_Rotate_Z(g_AngleZ)
             * Matrix_Rotate_Y(g_SoldierAngleY)
             * Matrix_Rotate_X(-3.14f/2 + g_AngleX);
