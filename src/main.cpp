@@ -1361,7 +1361,7 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
     // Atualizamos a distância da câmera para a origem utilizando a
     // movimentação da "rodinha", simulando um ZOOM.
     //g_CameraDistance -= 0.1f*yoffset;
-    cameraRadius += yoffset * 0.1f;
+    cameraRadius -= yoffset * 0.1f;
     if (cameraRadius < 0.1f)
         cameraRadius = 0.1f;   
 
