@@ -205,7 +205,11 @@ float g_MouseSensitivity = 0.2f;
 float cameraRadius = 10.0f;
 
 glm::vec3 g_SoldierPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 g_SoldierTargetPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 g_SoldierDirection = glm::vec3(0.0f, 0.0f, 0.0f);
 
+// Tempo da última vez que o botão direto do mouse foi pressionado
+double g_LastRightMouseButtonPressTime = 0.0;
 
 // Variáveis que controlam rotação do antebraço
 float g_ForearmAngleZ = 0.0f;
@@ -449,10 +453,10 @@ int main(int argc, char* argv[])
 
         float velocity = g_CameraSpeed * delta_t;
 
-        if (g_MoveForward)  g_SoldierPosition += velocity * camera_front;
-        if (g_MoveBackward) g_SoldierPosition -= velocity * camera_front;
-        if (g_MoveLeft)     g_SoldierPosition -= velocity * camera_right;
-        if (g_MoveRight)    g_SoldierPosition += velocity * camera_right;
+        if (g_MoveForward)  g_SoldierPosition -= velocity * camera_front;
+        if (g_MoveBackward) g_SoldierPosition += velocity * camera_front;
+        if (g_MoveLeft)     g_SoldierPosition += velocity * camera_right;
+        if (g_MoveRight)    g_SoldierPosition -= velocity * camera_right;
         if (g_MoveUp)       g_SoldierPosition += velocity * camera_up;
         if (g_MoveDown)     g_SoldierPosition -= velocity * camera_up;
         /*glm::vec3 front;
@@ -462,7 +466,13 @@ int main(int argc, char* argv[])
         glm::vec3 camera_front = glm::normalize(front);
         glm::vec3 camera_up = glm::vec3(0.0f, 1.0f, 0.0f);*/
 
-
+        float soldier_distance_from_target = glm::length(g_SoldierTargetPosition - g_SoldierPosition);
+        if (soldier_distance_from_target > 0.1f)
+        {
+            // Atualiza a direção do soldado para apontar para o alvo
+            g_SoldierDirection = glm::normalize(g_SoldierTargetPosition - g_SoldierPosition);
+            g_SoldierPosition += g_SoldierDirection * velocity;
+        }
 
         // converte yaw/pitch em offset esférico
         glm::vec3 offset;
@@ -1205,29 +1215,12 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
         glm::vec3 ray_origin = glm::vec3(g_camera_position_c);
         glm::vec3 ray_dir = GetRayFromMouse(xpos, ypos, window, g_projection_matrix, g_view_matrix);
 
-        float closest_t = std::numeric_limits<float>::max();
         int selected_x = -1, selected_y = -1;
 
-        for (int x = 0; x < BOARD_WIDTH; ++x)
-        {
-            for (int y = 0; y < BOARD_DEPTH; ++y)
-            {
-                float posX = x * g_ESPACO;
-                float posZ = y * g_ESPACO;
-                glm::vec3 block_center(posX, 0.0f, posZ);
-                float t;
-
-                if (RayIntersectsTopFace(ray_origin, ray_dir, block_center, g_ESPACO, t))
-                {
-                    if (t < closest_t)
-                    {
-                        closest_t = t;
-                        selected_x = x;
-                        selected_y = y;
-                    }
-                }
-            }
-        }
+        GetBlockThatIntersectsWithRay(
+            ray_origin, ray_dir,
+            selected_x, selected_y
+        );
 
         if (selected_x != -1 && selected_y != -1)
         {
@@ -1250,12 +1243,39 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
         // com o botão esquerdo pressionado.
         glfwGetCursorPos(window, &g_LastCursorPosX, &g_LastCursorPosY);
         g_RightMouseButtonPressed = true;
+        g_LastRightMouseButtonPressTime = glfwGetTime();
     }
     if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
     {
         // Quando o usuário soltar o botão esquerdo do mouse, atualizamos a
         // variável abaixo para false.
         g_RightMouseButtonPressed = false;
+
+        // Se o faz pouco tempo que o botão direito foi pressionado, então
+        // Atualizamos a posição target do soldado
+        if (glfwGetTime() - g_LastRightMouseButtonPressTime < 0.2)
+        {
+            double xpos, ypos;
+            glfwGetCursorPos(window, &xpos, &ypos);
+
+            glm::vec3 ray_origin = glm::vec3(g_camera_position_c);
+            glm::vec3 ray_dir = GetRayFromMouse(xpos, ypos, window, g_projection_matrix, g_view_matrix);
+
+            int target_x = -1, target_y = -1;
+
+            GetBlockThatIntersectsWithRay(
+                ray_origin, ray_dir,
+                target_x, target_y
+            );
+
+            if (target_x != -1 && target_y != -1)
+            {
+                // converte de inteiro para glm vec3
+                g_SoldierTargetPosition = glm::vec3(target_x, 1.0f, target_y);
+                // Atualiza a direção do soldado
+                glm::vec3 direction = g_SoldierTargetPosition - g_SoldierPosition;
+            }
+        }
     }
     if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_PRESS)
     {
@@ -1288,7 +1308,7 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
     if (g_RightMouseButtonPressed)
     {
         float dx = xpos - g_LastCursorPosX;
-        float dy = ypos - g_LastCursorPosY;
+        float dy = - ypos + g_LastCursorPosY;
 
         g_CameraYaw += dx * g_MouseSensitivity;
         g_CameraPitch -= dy * g_MouseSensitivity;

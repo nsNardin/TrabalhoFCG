@@ -18,3 +18,10 @@ bool InSoldiersRange(
     glm::vec3 soldier_pos, 
     glm::vec3 block_pos
 );
+
+bool GetBlockThatIntersectsWithRay(
+    glm::vec3 ray_origin, 
+    glm::vec3 ray_dir, 
+    int& selected_x, 
+    int& selected_y
+);

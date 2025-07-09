@@ -12,7 +12,12 @@ glm::vec3 CrossProduct(glm::vec3 a, glm::vec3 b)
     );
 }
 
-bool RayIntersectsTopFace(glm::vec3 ray_origin, glm::vec3 ray_dir, glm::vec3 block_pos, float block_size, float& t_out)
+bool RayIntersectsTopFace(
+    glm::vec3 ray_origin, 
+    glm::vec3 ray_dir, 
+    glm::vec3 block_pos, 
+    float block_size, 
+    float& t_out)
 {
     float y_plane = block_pos.y + block_size / 2.0f;
 
@@ -30,6 +35,40 @@ bool RayIntersectsTopFace(glm::vec3 ray_origin, glm::vec3 ray_dir, glm::vec3 blo
         return true;
     }
     return false;
+}
+
+bool GetBlockThatIntersectsWithRay(
+    glm::vec3 ray_origin, 
+    glm::vec3 ray_dir, 
+    int& selected_x, 
+    int& selected_y
+){
+    const float g_ESPACO = 1.0f; 
+    float closest_t = std::numeric_limits<float>::max();
+    bool found = false;
+
+    for (int x = 0; x < BOARD_WIDTH; ++x)
+    {
+        for (int y = 0; y < BOARD_DEPTH; ++y)
+        {
+            float posX = x * g_ESPACO;
+            float posZ = y * g_ESPACO;
+            glm::vec3 block_center(posX, 0.0f, posZ);
+            float t;
+
+            if (RayIntersectsTopFace(ray_origin, ray_dir, block_center, g_ESPACO, t))
+            {
+                if (t < closest_t)
+                {
+                    closest_t = t;
+                    selected_x = x;
+                    selected_y = y;
+                    found = true;
+                }
+            }
+        }
+    }
+    return found;
 }
 
 std::vector<glm::vec3> getSoldiersBottomFaceEdges(
