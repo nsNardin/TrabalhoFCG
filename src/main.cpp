@@ -38,7 +38,9 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
 #include "minesweeper_logic.hpp"
+#include "collisions.hpp"
 
 // Headers da biblioteca para carregar modelos obj
 #include <tiny_obj_loader.h>
@@ -261,26 +263,6 @@ glm::vec3 GetRayFromMouse(double mouseX, double mouseY, GLFWwindow* window, glm:
 
     glm::vec3 ray_world = glm::vec3(glm::inverse(view) * ray_eye);
     return glm::normalize(ray_world);
-}
-
-bool RayIntersectsTopFace(glm::vec3 ray_origin, glm::vec3 ray_dir, glm::vec3 block_pos, float block_size, float& t_out)
-{
-    float y_plane = block_pos.y + block_size / 2.0f;
-
-    if (std::abs(ray_dir.y) < 1e-6f) return false;
-
-    float t = (y_plane - ray_origin.y) / ray_dir.y;
-    if (t < 0.0f) return false;
-
-    glm::vec3 hit = ray_origin + ray_dir * t;
-
-    if (hit.x >= block_pos.x - block_size/2 && hit.x <= block_pos.x + block_size/2 &&
-        hit.z >= block_pos.z - block_size/2 && hit.z <= block_pos.z + block_size/2)
-    {
-        t_out = t;
-        return true;
-    }
-    return false;
 }
 
 
