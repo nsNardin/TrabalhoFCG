@@ -13,6 +13,7 @@ set(SOURCES
   src/glad.c
   src/minesweeper_logic.hpp
   src/collisions.cpp
+  src/collisions.hpp
 )
 
 cmake_minimum_required(VERSION 3.5.0)
