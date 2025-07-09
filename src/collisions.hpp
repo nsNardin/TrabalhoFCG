@@ -1,6 +1,6 @@
 #include <glm/ext/vector_float3.hpp>
 
-const float SOLDIER_RANGE = 1.0f;
+const float SOLDIER_RANGE = 5.0f;
 
 glm::vec3 CrossProduct(glm::vec3 a, glm::vec3 b);
 
@@ -20,7 +20,8 @@ bool SoldierStepsOnBlock(
 
 bool InSoldiersRange(
     glm::vec3 soldier_pos, 
-    glm::vec3 block_pos
+    int selected_x,
+    int selected_z
 );
 
 bool GetBlockThatIntersectsWithRay(

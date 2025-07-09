@@ -7,6 +7,9 @@ const int BOARD_DEPTH = 30;
 const int BOARD_HEIGHT = 1;
 const int BOMB_COUNTER = 200;
 
+const int START_X = 0;
+const int START_Y = 0;
+const int MINIMUM_REVEAL = 100;
 class Block {
 public:
     bool bomb;
@@ -26,6 +29,7 @@ class Board {
 private:
     Block board_[BOARD_WIDTH][BOARD_DEPTH] = {};
     GameState state_ = GameState::UNSTARTED;
+    int total_revealed_ = 0;
 
     // Place a bomb at the given coordinates.
     // Increment the counter of nearby blocks.
@@ -51,6 +55,8 @@ private:
         if (board_[x][y].revealed || board_[x][y].flag) {
             return; // evita revelações repetidas ou em blocos com bandeira
         }
+
+        total_revealed_++;
 
         board_[x][y].revealed = true;
 
@@ -146,9 +152,30 @@ public:
         }
     }
 
+    void clear() {
+        for (int x = 0; x < BOARD_WIDTH; ++x) {
+            for (int y = 0; y < BOARD_DEPTH; ++y) {
+                board_[x][y] = {};
+            }
+        }
+        state_ = GameState::UNSTARTED;
+        total_revealed_ = 0;
+    }
+
     // Starts the game
     void start() {
         populate(BOMB_COUNTER);
+
+        // Reveal the starting block and make sure it reveals at least
+        // MINIMUM_REVEAL blocks around it. If it doesn't, clear the 
+        // board and start again
+        reveal(START_X, START_Y);
+        if (total_revealed_ < MINIMUM_REVEAL) {
+            clear();
+            start();
+            return;
+        }
+
         state_ = GameState::RUNNING;
     }
 };

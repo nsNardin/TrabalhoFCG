@@ -120,10 +120,12 @@ bool SoldierStepsOnBlock(
 
 bool InSoldiersRange(
     glm::vec3 soldier_pos, 
-    glm::vec3 block_pos
+    int selected_x,
+    int selected_z
 ){
-    // Disconsiders vertical position of soldier and block
-    // Considers if block_pos is inside a circle with radius 1.0f
+    // Compute the center of the block at (selected_x, selected_z)
+    glm::vec3 block_pos(static_cast<float>(selected_x), soldier_pos.y, static_cast<float>(selected_z));
+    // Disregard vertical position
     float dx = soldier_pos.x - block_pos.x;
     float dz = soldier_pos.z - block_pos.z;
     float distance = std::sqrt(dx * dx + dz * dz);

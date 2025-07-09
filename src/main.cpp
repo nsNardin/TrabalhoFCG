@@ -204,7 +204,7 @@ float g_CameraSpeed = BOARD_WIDTH+BOARD_DEPTH/8;
 float g_MouseSensitivity = 0.2f;
 float cameraRadius = 10.0f;
 
-glm::vec3 g_SoldierPosition = glm::vec3(0.0f, 0.5f, 0.0f);
+glm::vec3 g_SoldierPosition = glm::vec3(0.0f, 2.5f, 0.0f);
 glm::vec3 g_SoldierTargetPosition = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 g_SoldierDirection = glm::vec3(0.0f, 0.0f, 0.0f);
 
@@ -595,7 +595,7 @@ int main(int argc, char* argv[])
         }
 
         // Desenhamos o modelo do soldado
-        model = Matrix_Translate(g_SoldierPosition.x, g_SoldierPosition.y + 0.5f, g_SoldierPosition.z)
+        model = Matrix_Translate(g_SoldierPosition.x, g_SoldierPosition.y - 0.5f, g_SoldierPosition.z)
             * Matrix_Scale(1.0f, 1.0f, 1.0f)
             * Matrix_Rotate_Z(g_AngleZ)
             * Matrix_Rotate_Y(g_SoldierAngleY)
@@ -1219,7 +1219,10 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 
         if (selected_x != -1 && selected_y != -1)
         {
-            g_board.tryReveal(selected_x, selected_y);
+            if (InSoldiersRange(g_SoldierPosition, selected_x, selected_y))
+            {
+                g_board.tryReveal(selected_x, selected_y);
+            }
         }
     }
 
