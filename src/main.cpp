@@ -204,7 +204,7 @@ float g_CameraSpeed = BOARD_WIDTH+BOARD_DEPTH/8;
 float g_MouseSensitivity = 0.2f;
 float cameraRadius = 10.0f;
 
-glm::vec3 g_SoldierPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 g_SoldierPosition = glm::vec3(0.0f, 0.5f, 0.0f);
 glm::vec3 g_SoldierTargetPosition = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 g_SoldierDirection = glm::vec3(0.0f, 0.0f, 0.0f);
 
@@ -548,12 +548,6 @@ int main(int argc, char* argv[])
         #define CUBE   3
         #define SOLDIER 15
 
-        // Desenhamos o plano do chão
-        model = Matrix_Translate(BOARD_WIDTH/2, -0.5f,BOARD_DEPTH/2)
-              * Matrix_Scale(BOARD_WIDTH/2 + 2, 0.0f, BOARD_DEPTH/2 + 2);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, PLANE);
-        DrawVirtualObject("the_plane");
 
         // Desenhamos o cubo
         for (int x = 0; x < BOARD_WIDTH; ++x) {
@@ -601,7 +595,7 @@ int main(int argc, char* argv[])
         }
 
         // Desenhamos o modelo do soldado
-        model = Matrix_Translate(g_SoldierPosition.x, g_SoldierPosition.y, g_SoldierPosition.z)
+        model = Matrix_Translate(g_SoldierPosition.x, g_SoldierPosition.y + 0.5f, g_SoldierPosition.z)
             * Matrix_Scale(1.0f, 1.0f, 1.0f)
             * Matrix_Rotate_Z(g_AngleZ)
             * Matrix_Rotate_Y(g_SoldierAngleY)
