@@ -100,9 +100,21 @@ std::vector<glm::vec3> getSoldiersBottomFaceEdges(
     return edges;
 }
 
-// Just gets the integer part of the soldier's position
-glm::vec3 SoldierStepsOnBlock(glm::vec3 soldier_pos){
-    
+bool SoldierStepsOnBlock(
+    glm::vec3 soldier_pos,
+    int& selected_x, 
+    int& selected_z
+){
+    // Get the integer part of soldier's position
+    selected_x = static_cast<int>(soldier_pos.x);
+    selected_z = static_cast<int>(soldier_pos.z);
+
+    // Check if the block is within the board limits
+    if (selected_x < 0 || selected_x >= BOARD_WIDTH || selected_z < 0 || selected_z >= BOARD_DEPTH) {
+        return false;
+    }
+
+    return true;
 }
     
 

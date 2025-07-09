@@ -12,7 +12,11 @@ std::vector<glm::vec3> getSoldiersBottomFaceEdges(
     glm::vec3 soldier_dimentions
 );
 
-glm::vec3 SoldierStepsOnBlock(glm::vec3 soldier_pos);
+bool SoldierStepsOnBlock(
+    glm::vec3 soldier_pos,
+    int& selected_x,
+    int& selected_z
+);
 
 bool InSoldiersRange(
     glm::vec3 soldier_pos, 

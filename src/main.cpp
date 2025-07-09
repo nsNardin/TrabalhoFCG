@@ -465,8 +465,15 @@ int main(int argc, char* argv[])
         {
             // Atualiza a direção do soldado para apontar para o alvo
             g_SoldierDirection = glm::normalize(g_SoldierTargetPosition - g_SoldierPosition);
-            g_SoldierPosition += g_SoldierDirection * velocity;
+            g_SoldierPosition += g_SoldierDirection * velocity * 0.5f;
         }
+
+        // Testa se o soldado está pisando em um bloco
+        int selected_x = -1, selected_y = -1;
+        if (SoldierStepsOnBlock(g_SoldierPosition, selected_x, selected_y)){
+            g_board.step(selected_x, selected_y);
+        }
+        
 
         // converte yaw/pitch em offset esférico
         glm::vec3 offset;
@@ -1382,6 +1389,28 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
         if (key == GLFW_KEY_0 + i && action == GLFW_PRESS && mod == GLFW_MOD_SHIFT)
             std::exit(100 + i);
     // ======================
+
+    // Se o usuário pressionar a tecla F, coloca uma bandeira
+    if (key == GLFW_KEY_F && action == GLFW_PRESS)
+    {
+        double xpos, ypos;
+        glfwGetCursorPos(window, &xpos, &ypos);
+
+        glm::vec3 ray_origin = glm::vec3(g_camera_position_c);
+        glm::vec3 ray_dir = GetRayFromMouse(xpos, ypos, window, g_projection_matrix, g_view_matrix);
+
+        int selected_x = -1, selected_y = -1;
+
+        GetBlockThatIntersectsWithRay(
+            ray_origin, ray_dir,
+            selected_x, selected_y
+        );
+
+        if (selected_x != -1 && selected_y != -1)
+        {
+            g_board.toggleFlag(selected_x, selected_y);
+        }
+    }
 
     // Se o usuário pressionar a tecla ESC, fechamos a janela.
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)

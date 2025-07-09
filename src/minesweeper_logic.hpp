@@ -136,6 +136,16 @@ public:
         }
     }
 
+    // Step on a block
+    void step(int x, int y) {
+        if (!board_[x][y].revealed) {
+            reveal(x, y);
+            if (checkVictory()) {
+                state_ = GameState::VICTORY;
+            }
+        }
+    }
+
     // Starts the game
     void start() {
         populate(BOMB_COUNTER);
